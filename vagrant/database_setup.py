@@ -33,6 +33,15 @@ class Region(Base):
     # image_filename
     image_region = Column(String(100))
 
+class Tours(Base):
+    __tablename__='tours'
+    type = Column(String(250))
+    date = Column(String(20))
+    id = Column(Integer, primary_key = True)
+    popularity = Column(Integer)
+    weather = Column(String(99))
+    virtual_tour = Column(String(99))
+    notes = Column(String(9999))
 
 # class name will be in camel case
 class College(Base):
@@ -59,6 +68,8 @@ class College(Base):
     college_region = relationship(Region)
     user_id = Column(Integer,ForeignKey('user.id'))
     user = relationship(User)
+    college_tour_id = Column(Integer, ForeignKey('tours.id'))
+    tours = relationship(Tours)
 
     @property
     def serialize(self):
