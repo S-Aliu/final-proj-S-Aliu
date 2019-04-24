@@ -326,7 +326,11 @@ session = DBSession()
 def showRegionCollegesLocation():
     return render_template('regionalcollegeslocation.html')
 
-
+@app.route('/<college>/<int:college_id>/')
+def eachCollege(college, college_id):
+    college = session.query(College).filter_by(college_id=college_id).one()
+    regions = session.query(Region).all()
+    return render_template('eachcollegepage.html', college=college, regions=regions,)
 # # create new college in same region by clicking link on page that shows all colleges for region
 # @app.route('/region/<region>/new/', methods=['GET','POST'])
 # # region is a string not an object!
