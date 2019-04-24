@@ -3,8 +3,8 @@
 
 <head>
   <style>
-    html,
-    body {
+
+    html, body {
       font-family: Arial, sans-serif;
       height: 100%;
       margin: 0;
@@ -14,6 +14,7 @@
     #map {
       height: 100%;
     }
+
   </style>
 </head>
 
@@ -23,68 +24,17 @@
     var map;
     // Create a new blank array for all the listing markers.
     var markers = [];
-
     function initMap() {
-      // Constructor creates a new map - only center and zoom are required.
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: {
-          lat: 39.8283,
-          lng: 98.5795
-        },
-        zoom: 20
-      });
-      // These are the real estate listings that will be shown to the user.
-      // Normally we'd have these in a database instead.
-      var locations = [{
-          title: 'University of Southern California',
-          location: {
-            lat: 34.0224,
-            lng: -118.2851
-          }
-        },
-        {
-          title: 'Williams College',
-          location: {
-            lat: 42.7130,
-            lng: -73.2036
-          }
-        },
-        {
-          title: 'University of Iowa',
-          location: {
-            lat: 41.6627,
-            lng: -91.5549
-          }
-        },
-        {
-          title: 'High Point University',
-          location: {
-            lat: 35.9722,
-            lng: -79.9956
-          }
-        },
-        {
-          title: 'University of the Ozarks',
-          location: {
-            lat: 35.4759,
-            lng: -93.4663
-          }
-        },
-        {
-          title: 'Cooper Union',
-          location: {
-            lat: 40.7281,
-            lng: -73.9916
-          }
-        },
-        {
-          title: 'Calvin College',
-          location: {
-            lat: 42.9299,
-            lng: -85.5893
-          }
-        },
-      ];
+      map = new google.maps.Map(document.getElementById('map'), {center: {lat: 39.8283,lng: 98.5795},zoom: 20});
+
+      var locations = [{title: 'University of Southern California',location: {lat: 34.0224,lng: -118.2851}},
+        {title: 'Williams College',location: {lat: 42.7130,lng: -73.2036}},
+        {title: 'University of Iowa',location: {lat: 41.6627,lng: -91.5549}},
+        {title: 'High Point University',location: {lat: 35.9722,lng: -79.9956}},
+        {title: 'University of the Ozarks',location: {lat: 35.4759,lng: -93.4663}},
+        {title: 'Cooper Union',location: {lat: 40.7281,lng: -73.9916}},
+        {title: 'Calvin College',location: {lat: 42.9299,lng: -85.5893}}];
+
       var largeInfowindow = new google.maps.InfoWindow();
       var bounds = new google.maps.LatLngBounds();
       // The following group uses the location array to create an array of markers on initialize.
@@ -100,9 +50,7 @@
           animation: google.maps.Animation.DROP,
           id: i
         });
-        // Push the marker to our array of markers.
         markers.push(marker);
-        // Create an onclick event to open an infowindow at each marker.
         marker.addListener('click', function() {
           populateInfoWindow(this, largeInfowindow);
         });
@@ -111,9 +59,6 @@
       // Extend the boundaries of the map for each marker
       map.fitBounds(bounds);
     }
-    // This function populates the infowindow when the marker is clicked. We'll only allow
-    // one infowindow which will open at the marker that is clicked, and populate based
-    // on that markers position.
     function populateInfoWindow(marker, infowindow) {
       // Check to make sure the infowindow is not already opened on this marker.
       if (infowindow.marker != marker) {
