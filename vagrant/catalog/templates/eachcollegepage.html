@@ -1,0 +1,40 @@
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
+</head>
+
+<body>
+<div style="margin-top: 100px;margin-left: 5px;margin-bottom:100px;">
+  <div class="container">
+    <section class="jumbotron text-center bg-light">
+      <h1 class="jumbotron-heading">Organize 4 College | {{college.name}}</h1>
+      <p class="lead text-muted"> Viewing {{college.name}} in the {{region}} region</p>
+    </section>
+    <hr class="style15" style="margin-bottom: 30px;">
+
+    <div class="row">
+      <div class="col-md-5 text-center">
+        <img src="{{url_for('static',filename=college.image_filename)}}" alt="{{college.image_filename}}" style="min-width:450px;max-width:451px;" class="img-thumbnail">
+      </div>
+      <div class="col-md-7">
+        <ul class="list-group">
+          <li class="list-group-item">Address: {{college.location}}</li>
+          <li class="list-group-item">Phone Number: {{college.phone_number}}</li>
+          <li class="list-group-item">Type: {{college.college_type}}</li>
+          <li class="list-group-item">Your Notes: {{college.notes}}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-5">
+      </div>
+      <div class="col-md-7">
+      <br>
+      <p>hello</p>
+    </div>
+  </div>
+  </div>
+</body>
+
+</html>
