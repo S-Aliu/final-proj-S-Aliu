@@ -322,7 +322,7 @@ session = DBSession()
 
 
 #show all colleges for region
-@app.route('/region')
+@app.route('/home')
 def showRegionCollegesLocation():
     return render_template('regionalcollegeslocation.html')
 
