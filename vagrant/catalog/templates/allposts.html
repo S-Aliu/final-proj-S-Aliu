@@ -2,7 +2,7 @@
 
 <head>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
-  <link rel="icon" href="../static/Cheetah.jpg" type="image/x-icon"/>
+  <link rel="icon" href="../static/Cheetah.jpg" type="image/x-icon" />
 </head>
 <nav class="navbar navbar-dark bg-dark text-light">
   <a class="navbar-brand" href="{{url_for('Home')}}">
@@ -20,27 +20,35 @@
   <div style="margin-top: 30px;margin-left: 5px;margin-bottom:100px;">
     <div class="container">
       <section class="jumbotron text-center bg-light">
-        <h1 class="jumbotron-heading">More options. More resources.</h1>
-        <p class="lead text-muted">Scroll down to search through our database of universities</p>
+        <h1 class="jumbotron-heading">This is where the tea (🍵) gets spilled</h1>
+        <p class="lead text-muted">Scroll down to see what everyone has to say about their tours!</p>
       </section>
       <hr class="style15" style="margin-bottom: 30px;">
 
       <div class="row" style="padding: 25px 50px 100px 150px;">
-        {% for c in colleges %}
-        <div class="card" style="width: 18rem; max-height: 1000px;">
-          <img class="card-img-top" src="../static/{{c.image_filename}}" alt="Card image cap">
+        {% for p in AllPosts %}
+        <div class="card" style="width: 18rem;">
           <div class="card-body">
-            <h5 class="card-title">{{c.name}}</h5>
-            <p class="card-text">{{c.location}}</p>
-            <a href="{{url_for('eachCollege', college_id=c.college_id)}}" class="btn btn-primary">Learn More</a>
+            <h5 class="card-title">{{p.author}}'s thoughts on {{p.college}}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{p.date}}</h6>
+            <p class="card-text">{{p.notes}}</p>
           </div>
         </div>
         &nbsp
         &nbsp
         {% endfor %}
-<br>
+        <br>
 
+        <div class="card" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title">Add your own comment!</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Your name here</h6>
+            <a href="{{url_for('NewPost')}}" class="btn btn-primary">Write a review...</a>
+          </div>
+        </div>
       </div>
+
+
 </body>
 
 </html>
