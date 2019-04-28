@@ -3,7 +3,7 @@ from flask import Flask, render_template, redirect, request, url_for, flash, jso
 # new imports
 from flask import session as login_session
 import random, string
-from database_setup import College, Region, Base, User
+from database_setup import College, Region, Base, User, Tours, Post
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 
@@ -80,27 +80,30 @@ def allColleges():
     colleges = session.query(College).all()
     return render_template('allcollegepage.html',colleges=colleges)
 
-# @app.route('/region/<region>/<int:college_id>/')
-# def showMyCollege(region, college_id):
-#     # get region colleges to provide for render template
-#     regions = session.query(Region).all()
-#     region_info = session.query(Region).filter_by(name=region).one()
-#     regioncolleges = session.query(College).filter_by(college_region_id=region_info.id)
-#     # get college to view
-#     college = session.query(College).filter_by(college_id=college_id).one()
-#     # get creator
-#     creator = getUserInfo(college.user_id)
-#     if 'username' in login_session and login_session['user_id'] != creator.id:
-#         current_user_picture = login_session['picture']
-#         return render_template('publicmycollege.html', college=college, creator=creator, colleges=regioncolleges, region=region, regions=regions, image=college.image_filename, pic=current_user_picture)
-#     else:
-#         if 'username' in login_session and login_session['user_id'] == creator.id:
-#             current_user_picture = login_session['picture']
-#             return render_template('mycollege.html', college=college, creator=creator, colleges=regioncolleges, region=region, regions=regions, image=college.image_filename, pic=current_user_picture)
-#         else:
-#             return render_template('publicmycollege.html', college=college, creator=creator, colleges=regioncolleges, region=region, regions=regions, image=college.image_filename)
-#
+@app.route('/Forum', methods=['GET', 'POST'])
+def Forum():
+    session = DBSession()
+    AllPosts = session.query(Post).all()
+    return render_template('allposts.html', AllPosts=AllPosts)
 
+@app.route('/posts', methods=['GET', 'POST'])
+def NewPost():
+    session = DBSession()
+    AllPosts = session.query(Post).all()
+    if request.method == 'POST':
+        NewPost = Post(author = request.form['author'], college = request.form['college'], date = request.form['date'], notes = request.form['notes'])
+        session.add(NewPost)
+        flash('New Post %s Successfully Published' %NewPost.date)
+        session.commit()
+        return redirect(url_for('Forum'))
+    else:
+        return render_template('new_post.html', AllPosts=AllPosts)
+
+@app.route('/tours')
+def allTours():
+    session = DBSession()
+    tours = session.query(Tours).all()
+    return render_template('alltours.html', tours=tours)
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
