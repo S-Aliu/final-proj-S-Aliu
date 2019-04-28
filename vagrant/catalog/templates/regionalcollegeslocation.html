@@ -1,7 +1,10 @@
-<!DOCTYPE html>
 <html>
 
 <head>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles.css') }}">
+  <link rel="icon" href="../static/Cheetah.jpg" type="image/x-icon"/>
+
   <style>
 
     html, body {
@@ -15,6 +18,7 @@
       bottom: 0px;
       height: 100%;
       left: 362px;
+      top: 405px;
       position: absolute;
       right: 0px;
     }
@@ -33,91 +37,168 @@
   </style>
 </head>
 
-<body>
+<nav class="navbar navbar-dark bg-dark text-light">
+  <a class="navbar-brand" href="{{url_for('Home')}}">
+    <img src="../static/Cheetah.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
+    &nbsp &nbsp Lightspeed College Search
+  </a>
+  <a class="nav-item nav-link text-light" href="{{url_for('allColleges')}}">Colleges</a>
+  <a class="nav-item nav-link text-light" href="#">Tours</a>
+  <a class="nav-item nav-link text-light" href="#">Forum</a>
+  <a class="nav-item nav-link text-light" href="#">Login</a>
+
+</nav>
+
+<div style="margin-top: 40px;margin-left: 5px;margin-bottom:50px;">
   <div class="container">
-    <div class="options-box">
-      <h1> Find A College Tour</h1>
-      <div>
-        <input id="show-listings" type="button" value="Show Listings">
-        <input id="hide-listings" type="button" value="Hide Listings">
+    <section class="jumbotron text-center bg-light">
+      <div class="container">
+        <h1 class="jumbotron-heading">Quick. Accurate. Reliable.</h1>
+        <p class="lead text-muted">
+          With <span class="font-italic">Lightspeed College Search </span>® viewing, adding, editing, and deleting information about colleges has never been easier!
+        </p>
       </div>
-    </div>
+    </section>
   </div>
-  <div id="map"></div>
-  <script>
-    var map;
-    // Create a new blank array for all the listing markers.
-    var markers = [];
-    function initMap() {
-      map = new google.maps.Map(document.getElementById('map'), {center: {lat: 39.8283,lng: 98.5795},zoom: 20});
+  <div style="margin-top: 50px;margin-left: -300px;margin-bottom:20px;">
+    <body>
+      <div class="container">
+        <div class="options-box">
+          <h1> Find A College Tour</h1>
+          <div>
+            <input id="show-listings" type="button" value="Show Listings">
+            <input id="hide-listings" type="button" value="Hide Listings">
+          </div>
+        </div>
+      </div>
+      <div id="map"></div>
 
-      var locations = [{title: 'University of Southern California',location: {lat: 34.0224,lng: -118.2851}},
-        {title: 'Williams College',location: {lat: 42.7130,lng: -73.2036}},
-        {title: 'University of Iowa',location: {lat: 41.6627,lng: -91.5549}},
-        {title: 'High Point University',location: {lat: 35.9722,lng: -79.9956}},
-        {title: 'University of the Ozarks',location: {lat: 35.4759,lng: -93.4663}},
-        {title: 'Cooper Union',location: {lat: 40.7281,lng: -73.9916}},
-        {title: 'Calvin College',location: {lat: 42.9299,lng: -85.5893}}];
+      <script>
+        var map;
+        // Create a new blank array for all the listing markers.
+        var markers = [];
 
-      var largeInfowindow = new google.maps.InfoWindow();
-      var bounds = new google.maps.LatLngBounds();
-      // The following group uses the location array to create an array of markers on initialize.
-      for (var i = 0; i < locations.length; i++) {
-        // Get the position from the location array.
-        var position = locations[i].location;
-        var title = locations[i].title;
-        // Create a marker per location, and put into markers array.
-        var marker = new google.maps.Marker({
-          map: map,
-          position: position,
-          title: title,
-          animation: google.maps.Animation.DROP,
-          id: i
-        });
-        markers.push(marker);
-        marker.addListener('click', function() {
-          populateInfoWindow(this, largeInfowindow);
-        });
-      }
-      // Extend the boundaries of the map for each marker
-      map.fitBounds(bounds);
+        function initMap() {
+          map = new google.maps.Map(document.getElementById('map'), {
+            center: {
+              lat: 39.8283,
+              lng: 98.5795
+            },
+            zoom: 20
+          });
 
-      document.getElementById('show-listings').addEventListener('click', showListings);
-      document.getElementById('hide-listings').addEventListener('click', hideListings);
-    }
-    function populateInfoWindow(marker, infowindow) {
-      // Check to make sure the infowindow is not already opened on this marker.
-      if (infowindow.marker != marker) {
-        infowindow.marker = marker;
-        infowindow.setContent('<div>' + marker.title + '</div>');
-        infowindow.open(map, marker);
-        // Make sure the marker property is cleared if the infowindow is closed.
-        infowindow.addListener('closeclick', function() {
-          infowindow.setMarker = null;
-        });
-      }
-    }
+          var locations = [{
+              title: 'University of Southern California',
+              location: {
+                lat: 34.0224,
+                lng: -118.2851
+              }
+            },
+            {
+              title: 'Williams College',
+              location: {
+                lat: 42.7130,
+                lng: -73.2036
+              }
+            },
+            {
+              title: 'University of Iowa',
+              location: {
+                lat: 41.6627,
+                lng: -91.5549
+              }
+            },
+            {
+              title: 'High Point University',
+              location: {
+                lat: 35.9722,
+                lng: -79.9956
+              }
+            },
+            {
+              title: 'University of the Ozarks',
+              location: {
+                lat: 35.4759,
+                lng: -93.4663
+              }
+            },
+            {
+              title: 'Cooper Union',
+              location: {
+                lat: 40.7281,
+                lng: -73.9916
+              }
+            },
+            {
+              title: 'Calvin College',
+              location: {
+                lat: 42.9299,
+                lng: -85.5893
+              }
+            }
+          ];
 
-    function showListings() {
-        var bounds = new google.maps.LatLngBounds();
-        // Extend the boundaries of the map for each marker and display the marker
-        for (var i = 0; i < markers.length; i++) {
-          markers[i].setMap(map);
-          bounds.extend(markers[i].position);
+          var largeInfowindow = new google.maps.InfoWindow();
+          var bounds = new google.maps.LatLngBounds();
+          // The following group uses the location array to create an array of markers on initialize.
+          for (var i = 0; i < locations.length; i++) {
+            // Get the position from the location array.
+            var position = locations[i].location;
+            var title = locations[i].title;
+            // Create a marker per location, and put into markers array.
+            var marker = new google.maps.Marker({
+              map: map,
+              position: position,
+              title: title,
+              animation: google.maps.Animation.DROP,
+              id: i
+            });
+            markers.push(marker);
+            marker.addListener('click', function() {
+              populateInfoWindow(this, largeInfowindow);
+            });
+          }
+          // Extend the boundaries of the map for each marker
+          map.fitBounds(bounds);
+
+          document.getElementById('show-listings').addEventListener('click', showListings);
+          document.getElementById('hide-listings').addEventListener('click', hideListings);
         }
-        map.fitBounds(bounds);
-      }
 
-      function hideListings() {
+        function populateInfoWindow(marker, infowindow) {
+          // Check to make sure the infowindow is not already opened on this marker.
+          if (infowindow.marker != marker) {
+            infowindow.marker = marker;
+            infowindow.setContent('<div>' + marker.title + '</div>');
+            infowindow.open(map, marker);
+            // Make sure the marker property is cleared if the infowindow is closed.
+            infowindow.addListener('closeclick', function() {
+              infowindow.setMarker = null;
+            });
+          }
+        }
+
+        function showListings() {
+          var bounds = new google.maps.LatLngBounds();
+          // Extend the boundaries of the map for each marker and display the marker
+          for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(map);
+            bounds.extend(markers[i].position);
+          }
+          map.fitBounds(bounds);
+        }
+
+        function hideListings() {
           for (var i = 0; i < markers.length; i++) {
             markers[i].setMap(null);
           }
         }
-  </script>
+      </script>
 
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCooqoWpl14FzJNfcdRjqAT8kSSgnajzj8&v=3&callback=initMap">
-  </script>
+      <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCooqoWpl14FzJNfcdRjqAT8kSSgnajzj8&v=3&callback=initMap">
+      </script>
 
-</body>
+    </body>
+  </div>
 
 </html>
