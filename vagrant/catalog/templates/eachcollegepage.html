@@ -2,38 +2,43 @@
 
 <head>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
+  <link rel="icon" href="{{url_for('static', filename='Cheetah.jpg')}}" type="image/x-icon"/>
 </head>
+<nav class="navbar navbar-dark bg-dark text-light">
+  <a class="navbar-brand" href="{{url_for('Home')}}">
+    <img src="{{url_for('static', filename='Cheetah.jpg')}}" width="30" height="30" class="d-inline-block align-top" alt="">
+    &nbsp &nbsp Lightspeed College Search
+  </a>
+  <a class="nav-item nav-link text-light" href="{{url_for('allColleges')}}">Colleges</a>
+  <a class="nav-item nav-link text-light" href="#">Tours</a>
+  <a class="nav-item nav-link text-light" href="#">Forum</a>
+  <a class="nav-item nav-link text-light" href="#">Login</a>
+
+</nav>
 
 <body>
-<div style="margin-top: 100px;margin-left: 5px;margin-bottom:100px;">
-  <div class="container">
-    <section class="jumbotron text-center bg-light">
-      <h1 class="jumbotron-heading">Organize 4 College | {{college.name}}</h1>
-      <p class="lead text-muted"> Viewing {{college.name}} in the {{college.college_region.name}} region</p>
-    </section>
-    <hr class="style15" style="margin-bottom: 30px;">
+  <div style="margin-top: 30px;margin-left: 5px;margin-bottom:100px;">
+    <div class="container">
+      <section class="jumbotron text-center bg-light">
+        <h1 class="jumbotron-heading">{{colleges.name}}</h1>
+        <p class="lead text-muted">Everything you're looking for is right here</p>
+      </section>
+      <hr class="style15" style="margin-bottom: 30px;">
+      </div>
 
-    <div class="row">
-      <div class="col-md-5 text-center">
-        <img src="{{url_for('static',filename=college.image_filename)}}" alt="{{college.image_filename}}" style="min-width:450px;max-width:451px;" class="img-thumbnail">
+      <div class="row">
+        <div class="col-md-5 text-center">
+          <img src="{{url_for('static',filename=colleges.image_filename)}}" alt="{{colleges.image_filename}}" style="min-width:450px;max-width:451px;" class="img-thumbnail">
+        </div>
+        <div class="col-md-7">
+          <ul class="list-group">
+            <li class="list-group-item">Address: {{colleges.location}}</li>
+            <li class="list-group-item">Phone Number: {{colleges.phone_number}}</li>
+            <li class="list-group-item">Type: {{colleges.college_type}}</li>
+            <li class="list-group-item">Your Notes: {{colleges.notes}}</li>
+          </ul>
+        </div>
       </div>
-      <div class="col-md-7">
-        <ul class="list-group">
-          <li class="list-group-item">Address: {{college.location}}</li>
-          <li class="list-group-item">Phone Number: {{college.phone_number}}</li>
-          <li class="list-group-item">Type: {{college.college_type}}</li>
-          <li class="list-group-item">Your Notes: {{college.notes}}</li>
-        </ul>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-5">
-      </div>
-      <div class="col-md-7">
-      <br>
-    </div>
-  </div>
-  </div>
 </body>
 
 </html>
