@@ -36,11 +36,20 @@ class Region(Base):
 class Tours(Base):
     __tablename__='tours'
     type = Column(String(250))
+    image_tour = Column(String(100))
     date = Column(String(20))
     id = Column(Integer, primary_key = True)
     popularity = Column(Integer)
     weather = Column(String(99))
     virtual_tour = Column(String(99))
+    notes = Column(String(9999))
+
+class Post(Base):
+    __tablename__='post'
+    author = Column(String(99))
+    college = Column(String(80), nullable = False)
+    id = Column(Integer, primary_key = True)
+    date = Column(String(20))
     notes = Column(String(9999))
 
 # class name will be in camel case
