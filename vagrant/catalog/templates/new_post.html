@@ -1,0 +1,65 @@
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
+  <link rel="icon" href="../static/Cheetah.jpg" type="image/x-icon" />
+</head>
+<nav class="navbar navbar-dark bg-dark text-light">
+  <a class="navbar-brand" href="{{url_for('Home')}}">
+    <img src="../static/Cheetah.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
+    &nbsp &nbsp Lightspeed College Search
+  </a>
+  <a class="nav-item nav-link text-light" href="{{url_for('allColleges')}}">Colleges</a>
+  <a class="nav-item nav-link text-light" href="{{url_for('allTours')}}">Tours</a>
+  <a class="nav-item nav-link text-light" href="{{url_for('Forum')}}">Forum</a>
+  <a class="nav-item nav-link text-light" href="#">Login</a>
+
+</nav>
+
+<body>
+  <div style="margin-top: 30px;margin-left: 5px;margin-bottom:100px;">
+    <div class="container">
+      <section class="jumbotron text-center bg-light">
+        <h1 class="jumbotron-heading">Let your voice be heard</h1>
+        <p class="lead text-muted">Fill out this form to add your thoughts to our forum</p>
+      </section>
+      <hr class="style15" style="margin-bottom: 30px;">
+
+      <div class="container">
+
+        <div class="card"">
+              <div class=" card-body">
+          <h5 class="card-title">Create a new post</h5>
+
+          <form action="{{url_for('NewPost')}}" method='POST' enctype="multipart/form-data">
+            <div class="row">
+              <div class="col-lg-6">
+
+                <p>Your name: </p>
+                <input type='text' size='30' name='author'>
+                <br>
+                <br>
+                <p>College: </p>
+                <input type='text' size='30' name='college'>
+                <br>
+                <br>
+              </div>
+              <div class="col-lg-6">
+                <p>Date: </p>
+                <input type='text' size='30' name='date'>
+                <br>
+                <br>
+                <p>Your thoughts: </p>
+                <input type='text' size='30' name='notes'>
+                <br>
+                <br>
+                <input type='submit' value='Create'>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</body>
+</html>
