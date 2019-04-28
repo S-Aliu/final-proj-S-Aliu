@@ -65,14 +65,20 @@ def showLogin():
 @app.route('/')
 @app.route('/home')
 def Home():
-    return render_template('home.html')
+    session = DBSession()
+    return render_template('regionalcollegeslocation.html')
 
-@app.route('/<college>/<int:college_id>/')
-def eachCollege(college, college_id):
-    college = session.query(College).filter_by(college_id=college_id).one()
-    regions = session.query(Region).all()
-    return render_template('eachcollegepage.html', college=college, region=regions,)
+@app.route('/college/<int:college_id>/')
+def eachCollege(college_id):
+    session = DBSession()
+    colleges = session.query(College).filter_by(college_id=college_id).one()
+    return render_template('eachcollegepage.html', college_id=college_id, colleges=colleges)
 
+@app.route('/colleges')
+def allColleges():
+    session = DBSession()
+    colleges = session.query(College).all()
+    return render_template('allcollegepage.html',colleges=colleges)
 
 # @app.route('/region/<region>/<int:college_id>/')
 # def showMyCollege(region, college_id):
