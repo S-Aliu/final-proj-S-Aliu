@@ -99,6 +99,27 @@ def NewPost():
     else:
         return render_template('new_post.html', AllPosts=AllPosts)
 
+@app.route('/posts/edit/<int:id>/', methods=['GET', 'POST'])
+def editPost():
+    session = DBSession()
+    AllPosts = session.query(Post).all()
+    posts = session.query(Post).filter_by(id=id).first()
+    editedPost = session.query(Post).filter_by(id=id).one()
+    if request.method == 'POST':
+        if request.form['author']:
+            editedPost.author = request.form['author']
+        if request.form['college']:
+            editedPost.college = request.form['college']
+        if request.form['date']:
+            editedPost.date = request.form['date']
+        if request.form['notes']:
+            editedPost.notes = request.form['notes']
+        session.add(editedPost)
+        session.commit()
+        return redirect(url_for('Forum'))
+    else:
+        return render_template('edit_post.html', AllPosts=AllPosts, posts=posts)
+
 @app.route('/tours')
 def allTours():
     session = DBSession()
