@@ -1,35 +1,48 @@
+# image project path and where image came from:
+# [1] calvin_college.jpg - link: http://www.interkal.com/wp-content/uploads/2015/01/Calvin-College-1.jpg
+# [2] Cheetah.jpg - link: need aminah link
+# [3] cooper_union.jpg - link: https://cdn.modlar.com/photos/869/img/s_1920_x/cooper_1_55c4d13349c85.jpg
+# [4] favicon.ico - link: need aminah link
+# [5] highpt_uni.jpg - link: https://www.commonapp.org/files/school/image/header_880333HPUop.jpg
+# [6] uni_iowa.jpg - link: https://kubrick.htvapps.com/htv-prod/ibmig/cms/image/kcci/40130486-university-of-iowa-0060-jpg.jpg#
+# [7] uni_montana.jpg - link: https://i3.wp.com/www.umt.edu/featured-stories/images/president_bodnar.jpg
+# [8] uni_ozarks.jpg - link: https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/University_of_the_Ozarks_campus.jpg/1200px-University_of_the_Ozarks_campus.jpg
+# [9] uniofiowa_tour.jpeg - link: aminah need link
+# [10] usc_college.jpg - link: http://www.uscannenbergmedia.com/resizer/E_WihMTLcUQFCXG1n_NE4PHdfWo=/1200x0
+# [11] usc_tour.jpeg - link: aminah need link
+# [12] williams_college.jpg - link: https://www.bestcollegereviews.org/wp-content/uploads/2014/09/williams_college.jpg
+# [13] williams_tour.jpeg - link: aminah need link
+
+# some imports done without Udacity course on Authetication and Authorization
+# some imports done after referencing dacity course on Authetication and Authorization
 import os
 from flask import Flask, render_template, redirect, request, url_for, flash, jsonify, send_from_directory, current_app, jsonify
-# new imports
 from flask import session as login_session
 import random, string
 from database_setup import College, Region, Base, User, Tours, Post
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
-
 from oauth2client.client import flow_from_clientsecrets
-# use this method if run into error trying to exchance authorization token for access token and need to catch error
 from oauth2client.client import FlowExchangeError
-# http library in python
 import httplib2
 import json
-# converts the return value from function into reponse object we many send to client
 from flask import make_response
 import requests
 
 app = Flask(__name__)
-# downloaded pictures go to static folder
+# used Stack Overflow discussion:
 UPLOAD_FOLDER = os.path.basename('static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
+# Udacity course on Authetication and Authorization
 CLIENT_ID = json.loads( open('client_secrets.json','r').read())['web']['client_id']
 
-# Create session and connect to DB ##
+# Udacity course on Authetication and Authorization
 engine = create_engine('sqlite:///collegeswithusers.db', connect_args={'check_same_thread': False})
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+# Udacity course on Authetication and Authorization
 @app.route('/login')
 def showLogin():
     # gets random numbers and letters that would need to be guessed to forge request (anti forgery state tokend)
@@ -38,7 +51,7 @@ def showLogin():
     regions = session.query(Region).all()
     return render_template('login.html',STATE=state, regions=regions)
 
-#show all colleges for region
+# ----------- independent ----------- #
 @app.route('/')
 @app.route('/home')
 def Home():
