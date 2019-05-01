@@ -14,7 +14,7 @@
 # [13] williams_tour.jpeg - link: https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwjpq9uyrvnhAhVxFzQIHYgxBXEQjRx6BAgBEAU&url=https%3A%2F%2Fwww.ussportscamps.com%2Ffieldhockey%2Fnike%2Fwilliams-college-nike-field-hockey-camp&psig=AOvVaw0ewArgwWD5DzyvPyd7vWal&ust=1556766796310759
 
 # some imports done without Udacity course on Authetication and Authorization and Full Stack Foundations
-# some imports done after referencing dacity course on Authetication and Authorization
+# some imports done after referencing Udacity course on Authetication and Authorization
 import os
 from flask import Flask, render_template, redirect, request, url_for, flash, jsonify, send_from_directory, current_app, jsonify
 from flask import session as login_session
@@ -119,6 +119,7 @@ def allTours():
     tours = session.query(Tours).all()
     return render_template('alltours.html', tours=tours)
 
+# Udacity course on Full Stack Foundations
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
