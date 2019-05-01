@@ -1,10 +1,11 @@
 <html>
-
+<!-- coded independently referencing Udacity Full Stack foundations tutorials to understand how to call information from database, and Udacity Google APIs tutorials -->
 <head>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles.css') }}">
   <link rel="icon" href="../static/Cheetah.jpg" type="image/x-icon"/>
 
+<!-- using Udacity Google APIs course -->
   <style>
 
     html, body {
@@ -36,7 +37,7 @@
 
   </style>
 </head>
-
+<!-- independent and Udacity Full Stack Foundation course  -->
 <nav class="navbar navbar-dark bg-dark text-light">
   <a class="navbar-brand" href="{{url_for('Home')}}">
     <img src="../static/Cheetah.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
@@ -71,6 +72,7 @@
           </div>
         </div>
       </div>
+      <!-- Udacity Google APIs course  referenced-->
       <div id="map"></div>
 
       <script>
@@ -197,7 +199,7 @@
 
       <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCooqoWpl14FzJNfcdRjqAT8kSSgnajzj8&v=3&callback=initMap">
       </script>
-
+<!-- end of Udacity Google API course referencing  -->
     </body>
   </div>
 
