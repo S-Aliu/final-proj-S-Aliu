@@ -6,6 +6,7 @@
 # [6] uni_iowa.jpg - link: https://kubrick.htvapps.com/htv-prod/ibmig/cms/image/kcci/40130486-university-of-iowa-0060-jpg.jpg#
 # [7] uni_montana.jpg - link: https://i3.wp.com/www.umt.edu/featured-stories/images/president_bodnar.jpg
 # [8] uni_ozarks.jpg - link: https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/University_of_the_Ozarks_campus.jpg/1200px-University_of_the_Ozarks_campus.jpg
+
 # [9] uniofiowa_tour.jpeg - link: https://www.edsmart.org/wp-content/uploads/2018/06/UofIowa.jpg
 # [10] usc_college.jpg - link: http://www.uscannenbergmedia.com/resizer/E_WihMTLcUQFCXG1n_NE4PHdfWo=/1200x0
 # [11] usc_tour.jpeg - link: https://s.hdnux.com/photos/01/01/13/20/17085481/3/rawImage.jpg
@@ -29,11 +30,13 @@ from flask import make_response
 import requests
 
 app = Flask(__name__)
+
 # used Stack Overflow discussion: https://stackoverflow.com/questions/10637352/flask-ioerror-when-saving-uploaded-files/10638095#10638095
 UPLOAD_FOLDER = os.path.basename('static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Udacity course on Authetication and Authorization
 CLIENT_ID = json.loads( open('client_secrets.json','r').read())['web']['client_id']
+
 
 # Udacity course on Full Stack Foundations
 engine = create_engine('sqlite:///collegeswithusers.db', connect_args={'check_same_thread': False})
@@ -49,6 +52,7 @@ def showLogin():
     login_session['state'] = state
     regions = session.query(Region).all()
     return render_template('login.html',STATE=state, regions=regions)
+
 
 # ----------- independent using Fullstack Stack Foundations Course to develop understandings ----------- #
 @app.route('/')
