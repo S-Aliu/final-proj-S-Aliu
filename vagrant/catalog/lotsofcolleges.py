@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import College, Region, Base, User, Tours, Post
+from database_setup import College, Region, Base, User, Tours, Post, City
 engine = create_engine('sqlite:///collegeswithusers.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
@@ -10,6 +10,15 @@ User1 = User(name="Laura Slide", email="lauraswags4@gmail.com",
              picture='https://lh3.googleusercontent.com/a-/AAuE7mD_BnB0srAZwYDWQmWz2oPZ6H5CEpB0-iNxcpk5=s120')
 session.add(User1)
 session.commit()
+
+#first city
+city1= City(name = 'Seattle')
+
+#second city
+city2= City(name = 'London')
+
+#third city
+city3= City(name = 'Lagos')
 
 #first post
 post1= Post(author = "Sally", college = "USC", date="4/28/19", notes = "I loved this tours!")

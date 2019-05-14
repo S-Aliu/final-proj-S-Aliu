@@ -19,7 +19,7 @@ import os
 from flask import Flask, render_template, redirect, request, url_for, flash, jsonify, send_from_directory, current_app, jsonify
 from flask import session as login_session
 import random, string
-from database_setup import College, Region, Base, User, Tours, Post
+from database_setup import College, Region, Base, User, Tours, Post, City
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from oauth2client.client import flow_from_clientsecrets
