@@ -3,7 +3,7 @@
 
 <head>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
-  <link rel="icon" href="{{url_for('static', filename='Cheetah.jpg')}}" type="image/x-icon"/>
+  <link rel="icon" href="{{url_for('static', filename='Cheetah.jpg')}}" type="image/x-icon" />
 </head>
 <nav class="navbar navbar-dark bg-dark text-light">
   <a class="navbar-brand" href="{{url_for('Home')}}">
@@ -13,7 +13,7 @@
   <a class="nav-item nav-link text-light" href="{{url_for('allColleges')}}">Colleges</a>
   <a class="nav-item nav-link text-light" href="{{url_for('allTours')}}">Tours</a>
   <a class="nav-item nav-link text-light" href="{{url_for('Forum')}}">Forum</a>
-  <a class="nav-item nav-link text-light" href="#">Login</a>
+  <a class="nav-item nav-link text-light" href="{{url_for('Weather')}}">Weather</a>
 
 </nav>
 
@@ -25,22 +25,37 @@
         <p class="lead text-muted">Everything you're looking for is right here</p>
       </section>
       <hr class="style15" style="margin-bottom: 30px;">
-      </div>
+    </div>
 
-      <div class="row">
-        <div class="col-md-5 text-center">
-          <img src="{{url_for('static',filename=colleges.image_filename)}}" alt="{{colleges.image_filename}}" style="min-width:450px;max-width:451px;" class="img-thumbnail">
-        </div>
-        <div class="col-md-7">
-          <ul class="list-group">
-            <li class="list-group-item">Address: {{colleges.location}}</li>
-            <li class="list-group-item">Phone Number: {{colleges.phone_number}}</li>
-            <li class="list-group-item">Type: {{colleges.college_type}}</li>
-            <li class="list-group-item">Available tour types: {{colleges.tours.type}}</li>
-            <li class="list-group-item">Weather: {{colleges.tours.weather}}</li>
-          </ul>
-        </div>
+    <div class="row">
+      <div class="col-md-5 text-center">
+        <img src="{{url_for('static',filename=colleges.image_filename)}}" alt="{{colleges.image_filename}}" style="min-width:450px;max-width:451px;" class="img-thumbnail">
       </div>
+      <div class="col-md-7">
+        <ul class="list-group">
+          <li class="list-group-item">Address: {{colleges.location}}</li>
+          <li class="list-group-item">Phone Number: {{colleges.phone_number}}</li>
+          <li class="list-group-item">Type: {{colleges.college_type}}</li>
+          <li class="list-group-item">Available tour types: {{colleges.tours.type}}</li>
+          <br>
+          <h4 style="text-indent: 20px;"> Current weather in {{weather.city}}</h4>
+          <div class="container">
+            <div class="row">
+              <div class="col-md-8">
+                <ul>
+                  <li style="font-size: 20px;">{{weather.temperature}} °F</li>
+                  <li style="font-size: 20px;">{{weather.description}}</li>
+                </ul>
+              </div>
+              <div class="col-md-4">
+              <img class="card-img-top" src="http://openweathermap.org/img/w/{{weather.icon}}.png" alt="Card image cap" style="width: 90px;">
+              </div>
+            </div>
+          </div>
+
+        </ul>
+      </div>
+    </div>
 </body>
 
 </html>
