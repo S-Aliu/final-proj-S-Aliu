@@ -91,11 +91,22 @@ def NewCity():
     else:
         return render_template('new_city.html')
 
-@app.route('/college/<int:college_id>/')
-def eachCollege(college_id):
+@app.route('/college/<int:college_id>/<int:college_city_id>/')
+def eachCollege(college_id, college_city_id):
     session = DBSession()
     colleges = session.query(College).filter_by(college_id=college_id).one()
-    return render_template('eachcollegepage.html', college_id=college_id, colleges=colleges)
+    city_college = session.query(College).filter_by(college_city_id=college_city_id).one()
+    city = city_college.college_city.name
+    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=bfb6673821c8d44c9ba923d72274ef24'
+    r = requests.get(url.format(city)).json()
+    weather = {
+    'city': city,
+    'temperature': r['main']['temp'],
+    'description': r['weather'][0]['description'] ,
+    'icon': r['weather'][0]['icon']
+    }
+    print(weather)
+    return render_template('eachcollegepage.html', college_id=college_id, city=city, colleges=colleges, weather=weather)
 
 @app.route('/colleges')
 def allColleges():
