@@ -79,8 +79,17 @@ def Weather():
         weather_data.append(weather)
     return render_template('weather.html', weather_data=weather_data)
 
+@app.route('/cities', methods=['GET', 'POST'])
+def NewCity():
     session = DBSession()
-    return render_template('weather.html', weather=weather)
+    AllCities = session.query(City).all()
+    if request.method == 'POST':
+        NewCity = City(name = request.form['name'])
+        session.add(NewCity)
+        session.commit()
+        return redirect(url_for('Weather'))
+    else:
+        return render_template('new_city.html')
 
 @app.route('/college/<int:college_id>/')
 def eachCollege(college_id):

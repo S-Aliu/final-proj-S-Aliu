@@ -1,0 +1,64 @@
+
+<!-- coded independently referencing Udacity Full Stack foundations tutorials to understand how to call information from database  -->
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
+  <link rel="icon" href="../static/Cheetah.jpg" type="image/x-icon" />
+</head>
+<nav class="navbar navbar-dark bg-dark text-light">
+  <a class="navbar-brand" href="{{url_for('Home')}}">
+    <img src="../static/Cheetah.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
+    &nbsp &nbsp Lightspeed College Search
+  </a>
+  <a class="nav-item nav-link text-light" href="{{url_for('allColleges')}}">Colleges</a>
+  <a class="nav-item nav-link text-light" href="{{url_for('allTours')}}">Tours</a>
+  <a class="nav-item nav-link text-light" href="{{url_for('Forum')}}">Forum</a>
+  <a class="nav-item nav-link text-light" href="{{url_for('Weather')}}">Weather</a>
+
+</nav>
+
+<body>
+  <div style="margin-top: 30px;margin-left: 5px;margin-bottom:100px;">
+    <div class="container">
+      <section class="jumbotron text-center bg-light">
+        <h1 class="jumbotron-heading">Let your voice be heard</h1>
+        <p class="lead text-muted">Fill out this form to add your thoughts to our forum</p>
+      </section>
+      <hr class="style15" style="margin-bottom: 30px;">
+
+      <div class="container">
+
+        <div class="card"">
+              <div class=" card-body">
+          <h5 class="card-title">Create a new post</h5>
+
+
+          <section class="section" style="text-align: center;">
+            <div class="container">
+              <div class="columns">
+                <div class="column is-offset-4 is-4">
+                  <form method="POST">
+                    <div class="field has-addons">
+                      <div class="control is-expanded">
+                        <input class="input" name="name" type="text" placeholder="City Name">
+                      </div>
+                      <div class="control">
+                        <button class="button is-info">
+                          Add City
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</body>
+</html>
