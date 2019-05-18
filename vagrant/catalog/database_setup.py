@@ -45,7 +45,6 @@ class Tours(Base):
     date = Column(String(20))
     id = Column(Integer, primary_key = True)
     popularity = Column(Integer)
-    weather = Column(String(99))
     virtual_tour = Column(String(99))
     notes = Column(String(9999))
 
@@ -84,6 +83,9 @@ class College(Base):
     user = relationship(User)
     college_tour_id = Column(Integer, ForeignKey('tours.id'))
     tours = relationship(Tours)
+    college_city_id = Column(Integer, ForeignKey('city.id'))
+    # get more info from corresponding region
+    college_city = relationship(City)
 
     @property
     def serialize(self):
