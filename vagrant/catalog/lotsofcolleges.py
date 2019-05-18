@@ -12,13 +12,19 @@ session.add(User1)
 session.commit()
 
 #first city
-city1= City(name = 'Seattle')
+city1= City(name = "Seattle")
+session.add(city1)
+session.commit()
 
 #second city
-city2= City(name = 'London')
+city2= City(name = "London")
+session.add(city2)
+session.commit()
 
 #third city
-city3= City(name = 'Lagos')
+city3= City(name = "Lagos")
+session.add(city3)
+session.commit()
 
 #first post
 post1= Post(author = "Sally", college = "USC", date="4/28/19", notes = "I loved this tours!")
