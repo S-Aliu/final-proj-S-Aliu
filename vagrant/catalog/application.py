@@ -61,6 +61,7 @@ def Home():
     session = DBSession()
     return render_template('regionalcollegeslocation.html')
 
+# coded with the OpenWeatherMap api and aid from https://www.youtube.com/watch?v=lWA0GgUN8kg
 @app.route('/weather')
 def Weather():
     session = DBSession()
@@ -91,6 +92,7 @@ def NewCity():
     else:
         return render_template('new_city.html')
 
+# coded with the OpenWeatherMap api and inspired by work done at https://www.youtube.com/watch?v=lWA0GgUN8kg (code written independently)
 @app.route('/college/<int:college_id>/<int:college_city_id>/')
 def eachCollege(college_id, college_city_id):
     session = DBSession()
