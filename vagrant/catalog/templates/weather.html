@@ -21,11 +21,12 @@
 
 <body>
   <br>
-
-  <form style="text-align: center;">
-  <input type="button" class="btn btn-primary btn-lg btn-block" value="Add a city" onclick="window.location.href='{{url_for('NewCity')}}'" >
-  </form>
-
+  <section class="jumbotron text-center bg-light">
+    <div class="container">
+      <h1 class="jumbotron-heading">Go where the wind 💨s</h1>
+      <p class="lead text-muted">Planning a road trip? Search up the weather at your pit stops so you can be prepared.</p>
+    </div>
+  </section>
 
   <div class="row" style="padding: 25px 50px 100px 150px;">
     {% for weather in weather_data %}
@@ -41,7 +42,9 @@
     &nbsp
     {% endfor %}
     <br>
-
+    <form style="text-align: center; padding-top: 20px;">
+    <input type="button" class="btn btn-primary btn-lg btn-block" value="Can't find a city? Add it!" onclick="window.location.href='{{url_for('NewCity')}}'" >
+    </form>
   </div>
 
 </body>
