@@ -1,0 +1,58 @@
+<!-- coded independently referencing Udacity Full Stack foundations tutorials to understand how to call information from database  -->
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
+  <link rel="icon" href="../static/Cheetah.jpg" type="image/x-icon" />
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+  <script src="//apis.google.com/js/client:platform.js?onload=start"></script>
+
+</head>
+<nav class="navbar navbar-dark bg-dark text-light">
+  <a class="navbar-brand" href="{{url_for('Home')}}">
+    <img src="../static/Cheetah.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
+    &nbsp &nbsp Lightspeed College Search
+  </a>
+  <a class="nav-item nav-link text-light" href="{{url_for('allColleges')}}">Colleges</a>
+  <a class="nav-item nav-link text-light" href="{{url_for('allTours')}}">Tours</a>
+  <a class="nav-item nav-link text-light" href="{{url_for('Forum')}}">Forum</a>
+  <a class="nav-item nav-link text-light" href="#">Login</a>
+
+</nav>
+
+<body>
+  <div style="margin-top: 30px;margin-left: 5px;margin-bottom:100px;">
+    <div class="container">
+      <section class="jumbotron text-center bg-light">
+        <h1 class="jumbotron-heading">Login</h1>
+        <p class="lead text-muted">Login to unlock more functionality</p>
+      </section>
+      <hr class="style15" style="margin-bottom: 30px;">
+
+      <div class="row" style="padding: 25px 50px 100px 150px;">
+<div class="col-md-4">
+  </div>
+  <div class="col-md-4">
+    <div class="card" style="width: 18rem; max-height: 1000px;">
+    <img class="card-img-top" src="../static/GooglePlus-logos-02-980x980.png" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">Google Sign In</h5>
+      <p class="card-text">Begin your upgraded <span class="font-italic">Lightspeed College Search</span>® Experience</p>
+      <div class="signinButton">
+      <!-- login button -->
+      <div class="g-signin2" data-width="300" data-height="200" data-longtitle="true">
+      <span class="g-signin" data-scope="openid email profile" data-clientid="171859473945-khq2fbji12oj97rrbj1p6pa3qspcf1n5.apps.googleusercontent.com" data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin" data-callback="signInCallback" data-approvalprompt="force">
+        </div>
+    </div>
+  </div>
+    </div>
+    <div class="col-md-4">
+      </div>
+
+
+
+      </div>
+</body>
+
+</html>
