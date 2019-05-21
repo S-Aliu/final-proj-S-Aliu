@@ -28,6 +28,8 @@ import httplib2
 import json
 from flask import make_response
 import requests
+from signal import signal, SIGPIPE, SIG_DFL
+signal(SIGPIPE,SIG_DFL)
 
 app = Flask(__name__)
 
@@ -85,10 +87,20 @@ def NewCity():
     session = DBSession()
     AllCities = session.query(City).all()
     if request.method == 'POST':
-        NewCity = City(name = request.form['name'])
-        session.add(NewCity)
-        session.commit()
-        return redirect(url_for('Weather'))
+        url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=bfb6673821c8d44c9ba923d72274ef24'
+        r = requests.get(url.format(request.form['name'])).json()
+        print r
+        # valid city
+        if r['cod'] == 200:
+            NewCity = City(name = request.form['name'])
+            session.add(NewCity)
+            session.commit()
+            return redirect(url_for('Weather'))
+        # Need to handle invalid city input
+        else:
+            flash('New City %s is invalid' %request.form['name'])
+            return render_template('new_city.html')
+
     else:
         return render_template('new_city.html')
 
