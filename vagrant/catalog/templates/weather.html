@@ -1,4 +1,4 @@
-<!-- https://www.youtube.com/watch?v=lWA0GgUN8kg -->
+<!--coded with guidance from https://www.youtube.com/watch?v=lWA0GgUN8kg -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -28,7 +28,8 @@
       <p class="lead text-muted">Planning a road trip? Search up the weather at your pit stops so you can be prepared.</p>
     </div>
   </section>
-
+  <div class="row">
+  </div>
   <div class="row" style="padding: 25px 50px 100px 150px;">
     {% for weather in weather_data %}
     <div class="card" style="width: 10rem; max-height: 1000px;">
@@ -44,7 +45,7 @@
     {% endfor %}
     <br>
     <form style="text-align: center; padding-top: 20px;">
-    <input type="button" class="btn btn-primary btn-lg btn-block" value="Can't find a city? Add it!" onclick="window.location.href='{{url_for('NewCity')}}'" >
+      <input type="button" class="btn btn-primary btn-lg btn-block" value="Can't find a city? Add it!" onclick="window.location.href='{{url_for('NewCity')}}'">
     </form>
   </div>
 

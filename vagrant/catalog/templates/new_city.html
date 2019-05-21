@@ -28,36 +28,44 @@
       <hr class="style15" style="margin-bottom: 30px;">
 
       <div class="container">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul style="	background-color: #D33F20;width:100%;text-decoration: none;">
+          {% for message in messages %}
+          <li style="list-style-type: none;text-align: center;"> <strong> {{ message }} </strong> </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        <div class="card">
+          <div class=" card-body">
+            <h5 class="card-title">Search for new cities 🏙</h5>
 
-        <div class="card"">
-              <div class=" card-body">
-          <h5 class="card-title">Search for new cities 🏙</h5>
-
-          <section class="section" style="text-align: center;">
-            <div class="container">
-              <div class="columns">
-                <div class="column is-offset-4 is-4">
-                  <form method="POST">
-                    <div class="field has-addons">
-                      <div class="control is-expanded">
-                        <input class="input" name="name" type="text" placeholder="City Name">
+            <section class="section" style="text-align: center;">
+              <div class="container">
+                <div class="columns">
+                  <div class="column is-offset-4 is-4">
+                    <form method="POST">
+                      <div class="field has-addons">
+                        <div class="control is-expanded">
+                          <input class="input" name="name" type="text" placeholder="City Name">
+                        </div>
+                        <div class="control">
+                          <button class="button is-info">
+                            Add City
+                          </button>
+                        </div>
                       </div>
-                      <div class="control">
-                        <button class="button is-info">
-                          Add City
-                        </button>
-                      </div>
-                    </div>
-                  </form>
+                    </form>
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
+            </section>
 
+          </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
 </body>
 
