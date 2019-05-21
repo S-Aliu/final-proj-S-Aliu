@@ -141,7 +141,7 @@ def NewPost():
     if request.method == 'POST':
         NewPost = Post(author = request.form['author'], college = request.form['college'], date = request.form['date'], notes = request.form['notes'])
         session.add(NewPost)
-        flash('New Post %s Successfully Published' %NewPost.date)
+        flash('New Post by %s Successfully Published!' %NewPost.author)
         session.commit()
         return redirect(url_for('Forum'))
     else:
