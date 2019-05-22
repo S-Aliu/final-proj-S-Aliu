@@ -19,7 +19,7 @@ import os
 from flask import Flask, render_template, redirect, request, url_for, flash, jsonify, send_from_directory, current_app, jsonify
 from flask import session as login_session
 import random, string
-from database_setup import College, Region, Base, User, Tours, Post
+from database_setup import College, Region, Base, User, Tours, Post, City
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from oauth2client.client import flow_from_clientsecrets
@@ -28,6 +28,8 @@ import httplib2
 import json
 from flask import make_response
 import requests
+from signal import signal, SIGPIPE, SIG_DFL
+signal(SIGPIPE,SIG_DFL)
 
 app = Flask(__name__)
 
@@ -137,36 +139,87 @@ def Home():
     print login_session
     return render_template('regionalcollegeslocation.html')
 
+# coded with the OpenWeatherMap api and aid from https://www.youtube.com/watch?v=lWA0GgUN8kg
 @app.route('/weather')
 def Weather():
-    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=bfb6673821c8d44c9ba923d72274ef24'
-    city = 'Las Vegas'
-
-    r = requests.get(url.format(city)).json()
-
-    weather = {
-        'city': city,
-        'temperature': r['main']['temp'],
-        'description': r['weather'][0]['description'] ,
-        'icon': r['weather'][0]['icon']
-    }
-
-    print(weather)
-
     session = DBSession()
-    return render_template('weather.html', weather=weather)
+    cities = session.query(City).all()
+    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=bfb6673821c8d44c9ba923d72274ef24'
+    weather_data = []
+    for city in cities:
+        r = requests.get(url.format(city.name)).json()
 
-@app.route('/college/<int:college_id>/')
-def eachCollege(college_id):
+        weather = {
+            'city': city,
+            'temperature': r['main']['temp'],
+            'description': r['weather'][0]['description'] ,
+            'icon': r['weather'][0]['icon']
+        }
+        weather_data.append(weather)
+    return render_template('weather.html', weather_data=weather_data)
+
+@app.route('/cities', methods=['GET', 'POST'])
+def NewCity():
+    session = DBSession()
+    AllCities = session.query(City).all()
+    if request.method == 'POST':
+        url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=bfb6673821c8d44c9ba923d72274ef24'
+        r = requests.get(url.format(request.form['name'])).json()
+        print r
+        # valid city
+        if r['cod'] == 200:
+            NewCity = City(name = request.form['name'])
+            session.add(NewCity)
+            session.commit()
+            return redirect(url_for('Weather'))
+        # Need to handle invalid city input
+        else:
+            flash('New City %s is invalid' %request.form['name'])
+            return render_template('new_city.html')
+
+    else:
+        return render_template('new_city.html')
+
+# coded with the OpenWeatherMap api and inspired by work done at https://www.youtube.com/watch?v=lWA0GgUN8kg (code written independently)
+@app.route('/college/<int:college_id>/<int:college_city_id>/')
+def eachCollege(college_id, college_city_id):
     session = DBSession()
     colleges = session.query(College).filter_by(college_id=college_id).one()
-    return render_template('eachcollegepage.html', college_id=college_id, colleges=colleges)
+    city_college = session.query(College).filter_by(college_city_id=college_city_id).one()
+    city = city_college.college_city.name
+    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=bfb6673821c8d44c9ba923d72274ef24'
+    r = requests.get(url.format(city)).json()
+    weather = {
+    'city': city,
+    'temperature': r['main']['temp'],
+    'description': r['weather'][0]['description'] ,
+    'icon': r['weather'][0]['icon']
+    }
+    print(weather)
+    return render_template('eachcollegepage.html', college_id=college_id, city=city, colleges=colleges, weather=weather)
 
 @app.route('/colleges')
 def allColleges():
     session = DBSession()
     colleges = session.query(College).all()
     return render_template('allcollegepage.html',colleges=colleges)
+
+@app.route('/college/new', methods=['GET', 'POST'])
+def NewCollege():
+    session = DBSession()
+    if "username" not in login_session:
+        return redirect('/login')
+    else:
+        colleges = session.query(College).all()
+        cities = session.query(City).all()
+        if request.method =='POST':
+            NewCollege = College(college_city = request.form['college_city'], tours = request.form['tours'], name = request.form['name'], image_filename = request.form['image_filename'], college_region = request.form['college_region'], location = request.form['location'], phone_number = request.form['phone_number'], college_type = request.form['college_type'], notes = request.form['notes'])
+            session.add(NewCollege)
+            flash('New College %s Successfully Created' %NewCollege.name)
+            session.commit()
+            return redirect(url_for('allcollegepage.html',colleges=colleges))
+        else:
+            return render_template('new_college.html', colleges=colleges, cities=cities)
 
 @app.route('/Forum', methods=['GET', 'POST'])
 def Forum():
@@ -181,7 +234,7 @@ def NewPost():
     if request.method == 'POST':
         NewPost = Post(author = request.form['author'], college = request.form['college'], date = request.form['date'], notes = request.form['notes'])
         session.add(NewPost)
-        flash('New Post %s Successfully Published' %NewPost.date)
+        flash('New Post by %s Successfully Published!' %NewPost.author)
         session.commit()
         return redirect(url_for('Forum'))
     else:
