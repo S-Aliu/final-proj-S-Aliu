@@ -4,11 +4,20 @@
 <head>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
   <link rel="icon" href="../static/Cheetah.jpg" type="image/x-icon" />
-
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-  <script src="//apis.google.com/js/client:platform.js?onload=start"></script>
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
+  <script>
+    function start() {
+      gapi.load('auth2', function() {
+        auth2 = gapi.auth2.init({
+          client_id: '171859473945-khq2fbji12oj97rrbj1p6pa3qspcf1n5.apps.googleusercontent.com'
+        });
+      });
+    }
+  </script>
+  <!--END GOOGLE PLUS SIGN IN SCRIPT-->
 </head>
+
 <nav class="navbar navbar-dark bg-dark text-light">
   <a class="navbar-brand" href="{{url_for('Home')}}">
     <img src="../static/Cheetah.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
@@ -30,29 +39,60 @@
       </section>
       <hr class="style15" style="margin-bottom: 30px;">
 
-      <div class="row" style="padding: 25px 50px 100px 150px;">
-<div class="col-md-4">
-  </div>
-  <div class="col-md-4">
-    <div class="card" style="width: 18rem; max-height: 1000px;">
-    <img class="card-img-top" src="../static/GooglePlus-logos-02-980x980.png" alt="Card image cap">
-    <div class="card-body">
-      <h5 class="card-title">Google Sign In</h5>
-      <p class="card-text">Begin your upgraded <span class="font-italic">Lightspeed College Search</span>® Experience</p>
-      <div class="signinButton">
-      <!-- login button -->
-      <div class="g-signin2" data-width="300" data-height="200" data-longtitle="true">
-      <span class="g-signin" data-scope="openid email profile" data-clientid="171859473945-khq2fbji12oj97rrbj1p6pa3qspcf1n5.apps.googleusercontent.com" data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin" data-callback="signInCallback" data-approvalprompt="force">
+      <div class="row" >
+        <div class="col-md-6" style="margin-right: 30px;">
+          <div class="card" style="width: 25rem; max-height: 1000px;">
+            <img class="card-img-top" src="../static/GooglePlus-logos-02-980x980.png" alt="Card image cap">
+            <div class="card-body">
+              <h5 class="card-title">Google Sign In</h5>
+              <p class="card-text">Begin your upgraded <span class="font-italic">Lightspeed College Search</span>® Experience</p>
+              <!-- login button -->
+              <!-- <div class="g-signin2" data-width="250" data-height="20" data-longtitle="true" style="margin-left: 40px;"> -->
+                <!-- <span class="g-signin" data-scope="openid email profile" data-clientid="171859473945-khq2fbji12oj97rrbj1p6pa3qspcf1n5.apps.googleusercontent.com" data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin" data-callback="signInCallback" data-approvalprompt="force"> -->
+                <button id="signinButton">Google Signin</button>
+              </div>
+            </div>
+            <div class="col-md-4">
+            </div>
+          </div>
         </div>
-    </div>
-  </div>
-    </div>
-    <div class="col-md-4">
-      </div>
+        <div class="col-md-6">
+          <div id="result"></div>
 
+        </div>
+        </div>
+        </div>
+  <script>
+  $('#signinButton').click(function() {
+    function signInCallback(authResult){
+      if (authResult['code']){
+        $('#signinButton').attr('style', 'display: none');
+        $.ajax({
+          type: 'POST',
+          url: '/gconnect?state={{STATE}}',
+          headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+          },
+          contentType: 'application/octet-stream; charset=utf-8',
+          success:function(result){
+            $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
+                 setTimeout(function() {
+                  window.location.href = "/";
+                 }, 2000);
+          },
+          processData:false,
+          data:authResult['code']
+        });
+      } else{
+        // handle error
+        console.log('There was an error: ' + authResult['error']);
+        $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+      }
+    }
+    auth2.grantOfflineAccess().then(signInCallback);
+  });
+</script>
 
-
-      </div>
 </body>
 
 </html>

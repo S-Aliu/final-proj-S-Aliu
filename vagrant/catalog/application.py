@@ -52,8 +52,83 @@ def showLogin():
     # gets random numbers and letters that would need to be guessed to forge request (anti forgery state tokend)
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
     login_session['state'] = state
+    print login_session
     regions = session.query(Region).all()
     return render_template('login.html',STATE=state, regions=regions)
+
+
+@app.route('/gconnect', methods=['GET','POST'])
+def gconnect():
+    print request.args.get('state')
+    print login_session
+    # if request.args.get('state') != login_session['state']:
+    #     response = make_response(json.dumps('Invalid state parameter.'), 401)
+    #     response.headers['Content-Type'] = 'application/json'
+    #     return response
+    code = request.data
+    try:
+        # Upgrade the authorization code into a credentials object
+        # takes flow object and adds client info
+        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        # specify this is one time code server will send
+        oauth_flow.redirect_uri = 'postmessage'
+        # passing one time code as input initiates the exchange
+        credentials = oauth_flow.step2_exchange(code)
+        # if anything goes wrong will send error as json object
+    except FlowExchangeError:
+        response = make_response(json.dumps('Failed to upgrade the authorization code.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    # Check that the access token is valid.
+    access_token = credentials.access_token
+    # now that we have a credential object will check if valid access token by appending in order to have Google API verify
+    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
+    # two lines create get requests with url and access token and store as result
+    h = httplib2.Http()
+    result = json.loads(h.request(url, 'GET')[1])
+    if result.get('error') is not None:
+        response = make_response(json.dumps(result.get('error')), 500)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    # checks if client ID's match
+    gplus_id = credentials.id_token['sub']
+    if result['user_id'] != gplus_id:
+        response = make_response(json.dumps("Token's user ID doesn't match given user ID."), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    if result['issued_to'] != CLIENT_ID:
+        response = make_response(json.dumps("Token's client ID does not match app's."), 401)
+        print "Token's client ID does not match app's."
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    # will check if user already logged in and set 200 succesful authentication without resetting log in variables
+    stored_access_token = login_session.get('access_token')
+    stored_gplus_id = login_session.get('gplus_id')
+    if stored_access_token is not None and gplus_id == stored_gplus_id:
+        response = make_response(json.dumps('Current user is already connected.'), 200)
+        response.headers['Content-Type'] = 'application/json'
+    # Store the access token in the session for later use.
+    login_session['access_token'] = credentials.access_token
+    login_session['gplus_id'] = gplus_id
+    # Get user info using the google API requesting info within scope and storing it as data
+    userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
+    params = {'access_token': credentials.access_token, 'alt': 'json'}
+    answer = requests.get(userinfo_url, params=params)
+    data = json.loads(answer.text)
+    # stores data in login session
+    login_session['username'] = data["name"]
+    login_session['picture'] = data["picture"]
+    login_session['email'] = data["email"]
+    login_session['provider'] = 'google'
+    output = ''
+    output += '<h1>Welcome, '
+    output += login_session['username']
+    output += '!</h1>'
+    output += '<img src="'
+    output += login_session['picture']
+    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    flash("You are now logged in as %s" % login_session['username'])
+    return output
 
 
 # ----------- independent using Fullstack Stack Foundations Course to develop understandings ----------- #
@@ -61,6 +136,7 @@ def showLogin():
 @app.route('/home')
 def Home():
     session = DBSession()
+    print login_session
     return render_template('regionalcollegeslocation.html')
 
 # coded with the OpenWeatherMap api and aid from https://www.youtube.com/watch?v=lWA0GgUN8kg
