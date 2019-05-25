@@ -1,54 +1,28 @@
 <!--coded with guidance from https://www.youtube.com/watch?v=lWA0GgUN8kg -->
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
-  <link rel="icon" href="../static/Cheetah.jpg" type="image/x-icon">
-  <title>Lightspeed College Search</title>
-</head>
-<nav class="navbar navbar-dark bg-dark text-light">
-  <a class="navbar-brand" href="{{url_for('Home')}}">
-    <img src="../static/Cheetah.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
-    &nbsp &nbsp Lightspeed College Search
-  </a>
-  <a class="nav-item nav-link text-light" href="{{url_for('allColleges')}}">Colleges</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('allTours')}}">Tours</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('Forum')}}">Forum</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('Weather')}}">Weather</a>
-
-</nav>
-
-<body>
+{% extends "base.html" %}
+{% block hype %}Go where the wind 💨s{% endblock %}
+{% block instructions %}Planning a road trip? Search up the weather at your pit stops so you can be prepared.{% endblock %}
+{% block content %}
+<div class="row">
+</div>
+<div class="row" style="padding: 25px 50px 100px 150px;">
+  {% for weather in weather_data %}
+  <div class="card" style="width: 10rem; max-height: 1000px;">
+    <img class="card-img-top" src="http://openweathermap.org/img/w/{{weather.icon}}.png" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">{{weather.city.name}}</h5>
+      <p class="card-text">{{weather.temperature}} °F</p>
+      <p class="card-text">{{weather.description}}</p>
+    </div>
+  </div>
+  &nbsp
+  &nbsp
+  {% endfor %}
   <br>
-  <section class="jumbotron text-center bg-light">
-    <div class="container">
-      <h1 class="jumbotron-heading">Go where the wind 💨s</h1>
-      <p class="lead text-muted">Planning a road trip? Search up the weather at your pit stops so you can be prepared.</p>
-    </div>
-  </section>
-  <div class="row">
-  </div>
-  <div class="row" style="padding: 25px 50px 100px 150px;">
-    {% for weather in weather_data %}
-    <div class="card" style="width: 10rem; max-height: 1000px;">
-      <img class="card-img-top" src="http://openweathermap.org/img/w/{{weather.icon}}.png" alt="Card image cap">
-      <div class="card-body">
-        <h5 class="card-title">{{weather.city.name}}</h5>
-        <p class="card-text">{{weather.temperature}} °F</p>
-        <p class="card-text">{{weather.description}}</p>
-      </div>
-    </div>
-    &nbsp
-    &nbsp
-    {% endfor %}
-    <br>
-    <form style="text-align: center; padding-top: 20px;">
-      <input type="button" class="btn btn-primary btn-lg btn-block" value="Can't find a city? Add it!" onclick="window.location.href='{{url_for('NewCity')}}'">
-    </form>
-  </div>
-
-</body>
-
-</html>
+  <form style="text-align: center; padding-top: 20px;">
+    <input type="button" class="btn btn-primary btn-lg btn-block" value="Can't find a city? Add it!" onclick="window.location.href='{{url_for('NewCity')}}'">
+  </form>
+</div>
+<br><br>
+{% endblock %}
