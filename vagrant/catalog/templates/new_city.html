@@ -1,72 +1,46 @@
 <!-- coded independently referencing Udacity Full Stack foundations tutorials to understand how to call information from database  -->
-<html>
 
-<head>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
-  <link rel="icon" href="../static/Cheetah.jpg" type="image/x-icon">
-  <title>Lightspeed College Search</title>
-</head>
-<nav class="navbar navbar-dark bg-dark text-light">
-  <a class="navbar-brand" href="{{url_for('Home')}}">
-    <img src="../static/Cheetah.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
-    &nbsp &nbsp Lightspeed College Search
-  </a>
-  <a class="nav-item nav-link text-light" href="{{url_for('allColleges')}}">Colleges</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('allTours')}}">Tours</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('Forum')}}">Forum</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('Weather')}}">Weather</a>
+{% extends "base.html" %}
+{% block hype %}New horizons await.{% endblock %}
+{% block instructions %}Search for an city below to see its weather. Road trip plans just got a whole lot easier.{% endblock %}
+{% block content %}
+<div class="container">
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <ul style="	background-color: #D33F20;width:100%;text-decoration: none;">
+    {% for message in messages %}
+    <li style="list-style-type: none;text-align: center;"> <strong> {{ message }} </strong> </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
+  <div class="card">
+    <div class=" card-body">
+      <h5 class="card-title">Search for new cities 🏙</h5>
 
-</nav>
-
-<body>
-  <div style="margin-top: 30px;margin-left: 5px;margin-bottom:100px;">
-    <div class="container">
-      <section class="jumbotron text-center bg-light">
-        <h1 class="jumbotron-heading">New horizons await.</h1>
-        <p class="lead text-muted">Search for an city below to see its weather. Road trip plans just got a whole lot easier.</p>
-      </section>
-      <hr class="style15" style="margin-bottom: 30px;">
-
-      <div class="container">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul style="	background-color: #D33F20;width:100%;text-decoration: none;">
-          {% for message in messages %}
-          <li style="list-style-type: none;text-align: center;"> <strong> {{ message }} </strong> </li>
-          {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-        <div class="card">
-          <div class=" card-body">
-            <h5 class="card-title">Search for new cities 🏙</h5>
-
-            <section class="section" style="text-align: center;">
-              <div class="container">
-                <div class="columns">
-                  <div class="column is-offset-4 is-4">
-                    <form method="POST">
-                      <div class="field has-addons">
-                        <div class="control is-expanded">
-                          <input class="input" name="name" type="text" placeholder="City Name">
-                        </div>
-                        <div class="control">
-                          <button class="button is-info">
-                            Add City
-                          </button>
-                        </div>
-                      </div>
-                    </form>
+      <section class="section" style="text-align: center;">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-offset-4 is-4">
+              <form method="POST">
+                <div class="field has-addons">
+                  <div class="control is-expanded">
+                    <input class="input" name="name" type="text" placeholder="City Name">
+                  </div>
+                  <div class="control">
+                    <button class="button is-info">
+                      Add City
+                    </button>
                   </div>
                 </div>
-              </div>
-            </section>
-
+              </form>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+
     </div>
   </div>
-</body>
-
-</html>
+</div>
+<br><br><br>
+{% endblock %}

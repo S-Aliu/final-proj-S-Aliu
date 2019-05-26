@@ -1,0 +1,90 @@
+<!-- Coded with aid from http://jinja.pocoo.org/docs/2.10/templates/#template-inheritance -->
+
+
+{# _myapp/templates/layout.html_ #}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% block head %}
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
+  <link rel="icon" href="../static/Cheetah.jpg" type="image/x-icon" />
+  <title>Lightspeed College Search</title>
+  {% endblock %}
+</head>
+<nav class="navbar navbar-dark bg-dark text-light">
+  {% block nav %}
+  <a class="navbar-brand" href="{{url_for('Home')}}">
+    <img src="../static/Cheetah.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
+    &nbsp &nbsp Lightspeed College Search
+  </a>
+  <a class="nav-item nav-link text-light" href="{{url_for('allColleges')}}">Colleges</a>
+  <a class="nav-item nav-link text-light" href="{{url_for('allTours')}}">Tours</a>
+  <a class="nav-item nav-link text-light" href="{{url_for('Forum')}}">Forum</a>
+  <a class="nav-item nav-link text-light" href="{{url_for('Weather')}}">Weather</a>
+  {% endblock %}
+</nav>
+
+<body>
+  <div style="margin-top: 30px;margin-left: 5px;margin-bottom:100px;">
+    <div class="container">
+      {% block pr %}
+      <section class="jumbotron text-center bg-light">
+        <h1 class="jumbotron-heading">{% block hype%}{% endblock %}</h1>
+        <p class="lead text-muted">{% block instructions %}{% endblock %}</p>
+      </section>
+      {% endblock %}
+    </div>
+      <hr class="style15" style="margin-bottom: 30px;">
+      <div id="content">{% block content %}{% endblock %}</div>
+      <div id="footer">
+        <!-- Footer -->
+        <footer class="page-footer font-small special-color-dark pt-4">
+
+          <!-- Footer Text -->
+          <div class="container-fluid text-center text-md-left">
+
+            <!-- Grid row -->
+            <div class="row">
+
+              <!-- Grid column -->
+              <div class="col-md-6 mt-md-0 mt-3">
+
+                <!-- Content -->
+                <h5 class="text-uppercase font-weight-bold">Sekinat Aliu</h5>
+                <p>Sekinat is a junior at Chadwick School and an avid coder. She can be found coding in Python, HTML, and CSS. She looks forward to improving her coding skills! </p>
+
+              </div>
+              <!-- Grid column -->
+
+              <hr class="clearfix w-100 d-md-none pb-3">
+
+              <!-- Grid column -->
+              <div class="col-md-6 mb-md-0 mb-3">
+
+                <!-- Content -->
+                <h5 class="text-uppercase font-weight-bold">Aminah Aliu</h5>
+                <p>Aminah is a sophomore in Chadwick School and she enjoys coding! She thinks that coding is a good 21st century skill to have, and her new favorite framework in JINJA.</p>
+
+              </div>
+              <!-- Grid column -->
+
+            </div>
+            <!-- Grid row -->
+
+          </div>
+          <!-- Footer Text -->
+
+          <!-- Copyright -->
+          <div class="footer-copyright text-center py-3">© 2019 Copyright: Aminah & Sekinat Aliu*
+            <br>*not actually
+          </div>
+          <!-- Copyright -->
+
+        </footer>
+        <!-- Footer -->
+      </div>
+</body>
+
+</html>

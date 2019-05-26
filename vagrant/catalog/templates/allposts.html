@@ -1,64 +1,43 @@
-<!-- coded independently referencing Udacity Full Stack foundations tutorials to understand how to call information from database  -->
-<html>
 
-<head>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
-  <link rel="icon" href="../static/Cheetah.jpg" type="image/x-icon" />
-  <title>Lightspeed College Search</title>
-</head>
-<nav class="navbar navbar-dark bg-dark text-light">
-  <a class="navbar-brand" href="{{url_for('Home')}}">
-    <img src="../static/Cheetah.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
-    &nbsp &nbsp Lightspeed College Search
-  </a>
-  <a class="nav-item nav-link text-light" href="{{url_for('allColleges')}}">Colleges</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('allTours')}}">Tours</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('Forum')}}">Forum</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('Weather')}}">Weather</a>
-
-</nav>
-
-<body>
-  <div style="margin-top: 30px;margin-left: 5px;margin-bottom:100px;">
-    <div class="container">
-      <section class="jumbotron text-center bg-light">
-        <h1 class="jumbotron-heading">This is where the tea (🍵) gets spilled</h1>
-        <p class="lead text-muted">Scroll down to see what everyone has to say about their tours!</p>
-      </section>
-      <hr class="style15" style="margin-bottom: 30px;">
-      {% with messages = get_flashed_messages() %}
-      {% if messages %}
-      <ul style="	background-color: #36D320;width:100%;text-decoration: none;">
-        {% for message in messages %}
-        <li style="list-style-type: none;text-align: center;"> <strong> {{ message }} </strong> </li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-      {% endwith %}
-      <div class="row" style="padding: 25px 50px 100px 150px;">
-        {% for p in AllPosts %}
-        <div class="card" style="width: 18rem;">
-          <div class="card-body">
-            <h5 class="card-title">{{p.author}}'s thoughts on {{p.college}}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">{{p.date}}</h6>
-            <p class="card-text">{{p.notes}}</p>
-          </div>
-        </div>
-        &nbsp
-        &nbsp
-        {% endfor %}
-        <br>
-
-        <div class="card" style="width: 18rem;">
-          <div class="card-body">
-            <h5 class="card-title">Add your own comment!</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Your name here</h6>
-            <a href="{{url_for('NewPost')}}" class="btn btn-primary">Write a review...</a>
-          </div>
+{% extends "base.html" %}
+{% block hype %}This is where the tea (🍵) gets spilled{% endblock %}
+{% block instructions %}Scroll down to see what everyone has to say about their tours{% endblock %}
+{% block content %}
+<div style="margin-top: 30px;margin-left: 5px;margin-bottom:100px;">
+  <div class="container">
+    <hr class="style15" style="margin-bottom: 30px;">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul style="	background-color: #36D320;width:100%;text-decoration: none;">
+      {% for message in messages %}
+      <li style="list-style-type: none;text-align: center;"> <strong> {{ message }} </strong> </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    <div class="row" style="padding: 25px 50px 100px 150px;">
+      {% for p in AllPosts %}
+      <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">{{p.author}}'s thoughts on {{p.college}}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{p.date}}</h6>
+          <p class="card-text">{{p.notes}}</p>
         </div>
       </div>
+      &nbsp
+      &nbsp
+      {% endfor %}
+      <br>
 
+      <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">Add your own comment!</h5>
+          <h6 class="card-subtitle mb-2 text-muted">Your name here</h6>
+          <a href="{{url_for('NewPost')}}" class="btn btn-primary">Write a review...</a>
+        </div>
+      </div>
+    </div>
 
-</body>
-
-</html>
+</div></div>
+<br><br>
+{% endblock %}

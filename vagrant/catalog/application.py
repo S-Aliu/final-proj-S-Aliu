@@ -139,7 +139,7 @@ def NewCollege():
         if request.method =='POST':
             NewCollege = College(college_city = request.form['college_city'], tours = request.form['tours'], name = request.form['name'], image_filename = request.form['image_filename'], college_region = request.form['college_region'], location = request.form['location'], phone_number = request.form['phone_number'], college_type = request.form['college_type'], notes = request.form['notes'])
             session.add(NewCollege)
-            flash('New Department %s Successfully Created' %NewCollege.name)
+            flash('New College %s Successfully Created' %NewCollege.name)
             session.commit()
             return redirect(url_for('allcollegepage.html',colleges=colleges))
         else:

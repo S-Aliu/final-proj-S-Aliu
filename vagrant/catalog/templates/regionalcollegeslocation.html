@@ -1,207 +1,186 @@
-<html>
-<!-- coded independently referencing Udacity Full Stack foundations tutorials to understand how to call information from database, and Udacity Google APIs tutorials -->
-<head>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles.css') }}">
-  <link rel="icon" href="../static/Cheetah.jpg" type="image/x-icon"/>
-  <title>Lightspeed College Search</title>
+
+{% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles.css') }}">
+<link rel="icon" href="../static/Cheetah.jpg" type="image/x-icon"/>
+<title>Lightspeed College Search</title>
 
 <!-- using Udacity Google APIs course -->
-  <style>
+<style>
 
-    html, body {
-      font-family: Arial, sans-serif;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
+  html, body {
+    font-family: Arial, sans-serif;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
 
-    #map {
-      bottom: 0px;
-      height: 100%;
-      left: 362px;
-      top: 405px;
-      position: absolute;
-      right: 0px;
-    }
+  #map {
+    bottom: 0px;
+    height: 100%;
+    left: 362px;
+    top: 405px;
+    position: absolute;
+    right: 0px;
+  }
 
-    .options-box {
-      background: #fff;
-      border: 1px solid #999;
-      border-radius: 3px;
-      height: 100%;
-      line-height: 35px;
-      padding: 10px 10px 30px 10px;
-      text-align: left;
-      width: 340px;
-    }
+  .options-box {
+    background: #fff;
+    border: 1px solid #999;
+    border-radius: 3px;
+    height: 100%;
+    line-height: 35px;
+    padding: 10px 10px 30px 10px;
+    text-align: left;
+    width: 340px;
+  }
 
-  </style>
-</head>
-<!-- independent and Udacity Full Stack Foundation course  -->
-<nav class="navbar navbar-dark bg-dark text-light">
-  <a class="navbar-brand" href="{{url_for('Home')}}">
-    <img src="../static/Cheetah.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
-    &nbsp &nbsp Lightspeed College Search
-  </a>
-  <a class="nav-item nav-link text-light" href="{{url_for('allColleges')}}">Colleges</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('allTours')}}">Tours</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('Forum')}}">Forum</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('Weather')}}">Weather</a>
-
-</nav>
-
-<div style="margin-top: 40px;margin-left: 5px;margin-bottom:50px;">
-  <div class="container">
-    <section class="jumbotron text-center bg-light">
-      <div class="container">
-        <h1 class="jumbotron-heading">Quick. Accurate. Reliable.</h1>
-        <p class="lead text-muted">
-          With <span class="font-italic">Lightspeed College Search </span>® viewing, adding, editing, and deleting information about colleges has never been easier!
-        </p>
-      </div>
-    </section>
-  </div>
-  <div style="margin-top: 50px;margin-left: -300px;margin-bottom:20px;">
-    <body>
-      <div class="container">
-        <div class="options-box">
-          <h1> Find A College Tour</h1>
-          <div>
-            <input id="show-listings" type="button" value="Show Listings">
-            <input id="hide-listings" type="button" value="Hide Listings">
-          </div>
+</style>
+{% endblock %}
+{% block hype %}Quick. Accurate. Reliable.{% endblock %}
+{% block instructions %}With <span class="font-italic">Lightspeed College Search </span>® viewing, adding, editing, and deleting information about colleges has never been easier!{% endblock %}
+{% block content %}
+<div style="margin-top: 50px;margin-left: -300px;margin-bottom:500px;">
+  <body>
+    <div class="container">
+      <div class="options-box">
+        <h1> Find A College Tour</h1>
+        <div>
+          <input id="show-listings" type="button" value="Show Listings">
+          <input id="hide-listings" type="button" value="Hide Listings">
         </div>
       </div>
-      <!-- Udacity Google APIs course  referenced-->
-      <div id="map"></div>
+    </div>
+    <!-- Udacity Google APIs course  referenced-->
+    <div id="map"></div>
 
-      <script>
-        var map;
-        // Create a new blank array for all the listing markers.
-        var markers = [];
+    <script>
+      var map;
+      // Create a new blank array for all the listing markers.
+      var markers = [];
 
-        function initMap() {
-          map = new google.maps.Map(document.getElementById('map'), {
-            center: {
-              lat: 39.8283,
-              lng: 98.5795
-            },
-            zoom: 20
-          });
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {
+            lat: 39.8283,
+            lng: 98.5795
+          },
+          zoom: 20
+        });
 
-          var locations = [{
-              title: 'University of Southern California',
-              location: {
-                lat: 34.0224,
-                lng: -118.2851
-              }
-            },
-            {
-              title: 'Williams College',
-              location: {
-                lat: 42.7130,
-                lng: -73.2036
-              }
-            },
-            {
-              title: 'University of Iowa',
-              location: {
-                lat: 41.6627,
-                lng: -91.5549
-              }
-            },
-            {
-              title: 'High Point University',
-              location: {
-                lat: 35.9722,
-                lng: -79.9956
-              }
-            },
-            {
-              title: 'University of the Ozarks',
-              location: {
-                lat: 35.4759,
-                lng: -93.4663
-              }
-            },
-            {
-              title: 'Cooper Union',
-              location: {
-                lat: 40.7281,
-                lng: -73.9916
-              }
-            },
-            {
-              title: 'Calvin College',
-              location: {
-                lat: 42.9299,
-                lng: -85.5893
-              }
+        var locations = [{
+            title: 'University of Southern California',
+            location: {
+              lat: 34.0224,
+              lng: -118.2851
             }
-          ];
-
-          var largeInfowindow = new google.maps.InfoWindow();
-          var bounds = new google.maps.LatLngBounds();
-          // The following group uses the location array to create an array of markers on initialize.
-          for (var i = 0; i < locations.length; i++) {
-            // Get the position from the location array.
-            var position = locations[i].location;
-            var title = locations[i].title;
-            // Create a marker per location, and put into markers array.
-            var marker = new google.maps.Marker({
-              map: map,
-              position: position,
-              title: title,
-              animation: google.maps.Animation.DROP,
-              id: i
-            });
-            markers.push(marker);
-            marker.addListener('click', function() {
-              populateInfoWindow(this, largeInfowindow);
-            });
+          },
+          {
+            title: 'Williams College',
+            location: {
+              lat: 42.7130,
+              lng: -73.2036
+            }
+          },
+          {
+            title: 'University of Iowa',
+            location: {
+              lat: 41.6627,
+              lng: -91.5549
+            }
+          },
+          {
+            title: 'High Point University',
+            location: {
+              lat: 35.9722,
+              lng: -79.9956
+            }
+          },
+          {
+            title: 'University of the Ozarks',
+            location: {
+              lat: 35.4759,
+              lng: -93.4663
+            }
+          },
+          {
+            title: 'Cooper Union',
+            location: {
+              lat: 40.7281,
+              lng: -73.9916
+            }
+          },
+          {
+            title: 'Calvin College',
+            location: {
+              lat: 42.9299,
+              lng: -85.5893
+            }
           }
-          // Extend the boundaries of the map for each marker
-          map.fitBounds(bounds);
+        ];
 
-          document.getElementById('show-listings').addEventListener('click', showListings);
-          document.getElementById('hide-listings').addEventListener('click', hideListings);
+        var largeInfowindow = new google.maps.InfoWindow();
+        var bounds = new google.maps.LatLngBounds();
+        // The following group uses the location array to create an array of markers on initialize.
+        for (var i = 0; i < locations.length; i++) {
+          // Get the position from the location array.
+          var position = locations[i].location;
+          var title = locations[i].title;
+          // Create a marker per location, and put into markers array.
+          var marker = new google.maps.Marker({
+            map: map,
+            position: position,
+            title: title,
+            animation: google.maps.Animation.DROP,
+            id: i
+          });
+          markers.push(marker);
+          marker.addListener('click', function() {
+            populateInfoWindow(this, largeInfowindow);
+          });
         }
+        // Extend the boundaries of the map for each marker
+        map.fitBounds(bounds);
 
-        function populateInfoWindow(marker, infowindow) {
-          // Check to make sure the infowindow is not already opened on this marker.
-          if (infowindow.marker != marker) {
-            infowindow.marker = marker;
-            infowindow.setContent('<div>' + marker.title + '</div>');
-            infowindow.open(map, marker);
-            // Make sure the marker property is cleared if the infowindow is closed.
-            infowindow.addListener('closeclick', function() {
-              infowindow.setMarker = null;
-            });
-          }
+        document.getElementById('show-listings').addEventListener('click', showListings);
+        document.getElementById('hide-listings').addEventListener('click', hideListings);
+      }
+
+      function populateInfoWindow(marker, infowindow) {
+        // Check to make sure the infowindow is not already opened on this marker.
+        if (infowindow.marker != marker) {
+          infowindow.marker = marker;
+          infowindow.setContent('<div>' + marker.title + '</div>');
+          infowindow.open(map, marker);
+          // Make sure the marker property is cleared if the infowindow is closed.
+          infowindow.addListener('closeclick', function() {
+            infowindow.setMarker = null;
+          });
         }
+      }
 
-        function showListings() {
-          var bounds = new google.maps.LatLngBounds();
-          // Extend the boundaries of the map for each marker and display the marker
-          for (var i = 0; i < markers.length; i++) {
-            markers[i].setMap(map);
-            bounds.extend(markers[i].position);
-          }
-          map.fitBounds(bounds);
+      function showListings() {
+        var bounds = new google.maps.LatLngBounds();
+        // Extend the boundaries of the map for each marker and display the marker
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(map);
+          bounds.extend(markers[i].position);
         }
+        map.fitBounds(bounds);
+      }
 
-        function hideListings() {
-          for (var i = 0; i < markers.length; i++) {
-            markers[i].setMap(null);
-          }
+      function hideListings() {
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(null);
         }
-      </script>
+      }
+    </script>
 
-      <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCooqoWpl14FzJNfcdRjqAT8kSSgnajzj8&v=3&callback=initMap">
-      </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCooqoWpl14FzJNfcdRjqAT8kSSgnajzj8&v=3&callback=initMap">
+    </script>
 <!-- end of Udacity Google API course referencing  -->
-    </body>
-  </div>
+  </body>
+</div>
 
-</html>
+{% endblock %}

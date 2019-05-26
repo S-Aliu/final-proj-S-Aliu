@@ -1,48 +1,23 @@
 <!-- coded independently referencing Udacity Full Stack foundations tutorials to understand how to call information from database  -->
-<html>
 
-<head>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
-  <link rel="icon" href="../static/Cheetah.jpg" type="image/x-icon"/>
-  <title>Lightspeed College Search</title>
-</head>
-<nav class="navbar navbar-dark bg-dark text-light">
-  <a class="navbar-brand" href="{{url_for('Home')}}">
-    <img src="../static/Cheetah.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
-    &nbsp &nbsp Lightspeed College Search
-  </a>
-  <a class="nav-item nav-link text-light" href="{{url_for('allColleges')}}">Colleges</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('allTours')}}">Tours</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('Forum')}}">Forum</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('Weather')}}">Weather</a>
+{% extends "base.html" %}
+{% block hype %}Get the insider's scoop on your dream college{% endblock %}
+{% block instructions %}Scroll down to find the right tour for you{% endblock %}
+{% block content %}
+<div class="row" style="padding: 25px 50px 100px 150px;">
+  {% for t in tours %}
+  <div class="card" style="width: 18rem; max-height: 1000px;">
+    <img class="card-img-top" src="../static/{{t.image_tour}}" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">Type: {{t.type}}</h5>
+      <p class="card-text">Popularity: {{t.popularity}}</p>
+      <a href="{{t.virtual_tour}}" class="btn btn-primary">Virtual Tour</a>
+    </div>
+  </div>
+  &nbsp
+  &nbsp
+  {% endfor %}
+  <br>
 
-</nav>
-
-<body>
-  <div style="margin-top: 30px;margin-left: 5px;margin-bottom:100px;">
-    <div class="container">
-      <section class="jumbotron text-center bg-light">
-        <h1 class="jumbotron-heading">Get the insider's scoop on your dream college</h1>
-        <p class="lead text-muted">Scroll down to find the right tour for you</p>
-      </section>
-      <hr class="style15" style="margin-bottom: 30px;">
-
-      <div class="row" style="padding: 25px 50px 100px 150px;">
-        {% for t in tours %}
-        <div class="card" style="width: 18rem; max-height: 1000px;">
-          <img class="card-img-top" src="../static/{{t.image_tour}}" alt="Card image cap">
-          <div class="card-body">
-            <h5 class="card-title">Type: {{t.type}}</h5>
-            <p class="card-text">Popularity: {{t.popularity}}</p>
-            <a href="{{t.virtual_tour}}" class="btn btn-primary">Virtual Tour</a>
-          </div>
-        </div>
-        &nbsp
-        &nbsp
-        {% endfor %}
-<br>
-
-      </div>
-</body>
-
-</html>
+</div>
+{% endblock %}
