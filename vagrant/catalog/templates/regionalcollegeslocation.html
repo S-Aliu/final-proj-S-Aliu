@@ -44,16 +44,23 @@
 <div style="margin-top: 50px;margin-left: -300px;margin-bottom:500px;">
   <body>
     <div class="container">
-      <div class="options-box">
-        <h1> Find A College Tour</h1>
-        <div>
-          <input id="show-listings" type="button" value="Show Listings">
-          <input id="hide-listings" type="button" value="Hide Listings">
-        </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="options-box">
+            <h1> Find A College Tour</h1>
+            <div>
+              <input id="show-listings" type="button" value="Show Listings">
+              <input id="hide-listings" type="button" value="Hide Listings">
+            </div>
+          </div>
+      </div>
+      <div class="col-md-6">
+        <!-- Udacity Google APIs course  referenced-->
+        <div id="map"></div>
+      </div>
       </div>
     </div>
-    <!-- Udacity Google APIs course  referenced-->
-    <div id="map"></div>
+
 
     <script>
       var map;

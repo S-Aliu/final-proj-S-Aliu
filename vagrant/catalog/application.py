@@ -1,24 +1,10 @@
-# image project path and where image came from:
-# [1] calvin_college.jpg - link: http://www.interkal.com/wp-content/uploads/2015/01/Calvin-College-1.jpg
-# [2] Cheetah.jpg - link: https://i.imgur.com/S7k7HXu.jpg
-# [3] cooper_union.jpg - link: https://cdn.modlar.com/photos/869/img/s_1920_x/cooper_1_55c4d13349c85.jpg
-# [5] highpt_uni.jpg - link: https://www.commonapp.org/files/school/image/header_880333HPUop.jpg
-# [6] uni_iowa.jpg - link: https://kubrick.htvapps.com/htv-prod/ibmig/cms/image/kcci/40130486-university-of-iowa-0060-jpg.jpg#
-# [7] uni_montana.jpg - link: https://i3.wp.com/www.umt.edu/featured-stories/images/president_bodnar.jpg
-# [8] uni_ozarks.jpg - link: https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/University_of_the_Ozarks_campus.jpg/1200px-University_of_the_Ozarks_campus.jpg
-
-# [9] uniofiowa_tour.jpeg - link: https://www.edsmart.org/wp-content/uploads/2018/06/UofIowa.jpg
-# [10] usc_college.jpg - link: http://www.uscannenbergmedia.com/resizer/E_WihMTLcUQFCXG1n_NE4PHdfWo=/1200x0
-# [11] usc_tour.jpeg - link: https://s.hdnux.com/photos/01/01/13/20/17085481/3/rawImage.jpg
-# [12] williams_college.jpg - link: https://www.bestcollegereviews.org/wp-content/uploads/2014/09/williams_college.jpg
-# [13] williams_tour.jpeg - link: https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwjpq9uyrvnhAhVxFzQIHYgxBXEQjRx6BAgBEAU&url=https%3A%2F%2Fwww.ussportscamps.com%2Ffieldhockey%2Fnike%2Fwilliams-college-nike-field-hockey-camp&psig=AOvVaw0ewArgwWD5DzyvPyd7vWal&ust=1556766796310759
-
-# some imports done without Udacity course on Authetication and Authorization and Full Stack Foundations
-# some imports done after referencing Udacity course on Authetication and Authorization
+"""houses functions"""
 import os
-from flask import Flask, render_template, redirect, request, url_for, flash, jsonify, send_from_directory, current_app, jsonify
+from flask import Flask, render_template, redirect, request, url_for, flash, jsonify
+from flask import send_from_directory, current_app
 from flask import session as login_session
-import random, string
+import random
+import string
 from database_setup import College, Region, Base, User, Tours, Post, City
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
@@ -29,42 +15,45 @@ import json
 from flask import make_response
 import requests
 from signal import signal, SIGPIPE, SIG_DFL
-signal(SIGPIPE,SIG_DFL)
+signal(SIGPIPE, SIG_DFL)
 
-app = Flask(__name__)
+APP = Flask(__name__)
 
-# used Stack Overflow discussion: https://stackoverflow.com/questions/10637352/flask-ioerror-when-saving-uploaded-files/10638095#10638095
+# used Stack Overflow discussion: https://stackoverflow.com/questions/10637352/flask-io
+# error-when-saving-uploaded-files/10638095#10638095
 UPLOAD_FOLDER = os.path.basename('static')
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+APP.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Udacity course on Authetication and Authorization
-CLIENT_ID = json.loads( open('client_secrets.json','r').read())['web']['client_id']
+CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
+    'web']['client_id']
 
 
 # Udacity course on Full Stack Foundations
-engine = create_engine('sqlite:///collegeswithusers.db', connect_args={'check_same_thread': False})
-Base.metadata.bind = engine
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
+ENGINE = create_engine('sqlite:///collegeswithusers.db',
+                       connect_args={'check_same_thread': False})
+Base.metadata.bind = ENGINE
+DBSESSION = sessionmaker(bind=ENGINE)
+SESSION = DBSESSION()
 
 # Udacity course on Authetication and Authorization
-@app.route('/login')
-def showLogin():
-    # gets random numbers and letters that would need to be guessed to forge request (anti forgery state tokend)
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
+@APP.route('/login')
+def showlogin():
+    """makes state token"""
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for x in xrange(32))
     login_session['state'] = state
-    print login_session
-    regions = session.query(Region).all()
-    return render_template('login.html',STATE=state, regions=regions)
+    regions = SESSION.query(Region).all()
+    return render_template('login.html', STATE=state, regions=regions)
 
 
-@app.route('/gconnect', methods=['GET','POST'])
+@APP.route('/gconnect', methods=['GET', 'POST'])
 def gconnect():
-    print request.args.get('state')
-    print login_session
-    # if request.args.get('state') != login_session['state']:
-    #     response = make_response(json.dumps('Invalid state parameter.'), 401)
-    #     response.headers['Content-Type'] = 'application/json'
-    #     return response
+    """signs in using google provider"""
+    print login_session['state']
+    if request.args.get('state') != login_session['state']:
+        response = make_response(json.dumps('Invalid state parameter.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
     code = request.data
     try:
         # Upgrade the authorization code into a credentials object
@@ -76,16 +65,19 @@ def gconnect():
         credentials = oauth_flow.step2_exchange(code)
         # if anything goes wrong will send error as json object
     except FlowExchangeError:
-        response = make_response(json.dumps('Failed to upgrade the authorization code.'), 401)
+        response = make_response(json.dumps(
+            'Failed to upgrade the authorization code.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
     # Check that the access token is valid.
     access_token = credentials.access_token
-    # now that we have a credential object will check if valid access token by appending in order to have Google API verify
-    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
+    # now that we have a credential object will check if valid access
+    # token by appending in order to have Google API verify
+    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' %
+           access_token)
     # two lines create get requests with url and access token and store as result
-    h = httplib2.Http()
-    result = json.loads(h.request(url, 'GET')[1])
+    variable_h = httplib2.Http()
+    result = json.loads(variable_h.request(url, 'GET')[1])
     if result.get('error') is not None:
         response = make_response(json.dumps(result.get('error')), 500)
         response.headers['Content-Type'] = 'application/json'
@@ -93,19 +85,23 @@ def gconnect():
     # checks if client ID's match
     gplus_id = credentials.id_token['sub']
     if result['user_id'] != gplus_id:
-        response = make_response(json.dumps("Token's user ID doesn't match given user ID."), 401)
+        response = make_response(json.dumps(
+            "Token's user ID doesn't match given user ID."), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
     if result['issued_to'] != CLIENT_ID:
-        response = make_response(json.dumps("Token's client ID does not match app's."), 401)
+        response = make_response(json.dumps(
+            "Token's client ID does not match app's."), 401)
         print "Token's client ID does not match app's."
         response.headers['Content-Type'] = 'application/json'
         return response
-    # will check if user already logged in and set 200 succesful authentication without resetting log in variables
+    # will check if user already logged in and set 200 succ
+    # esful authentication without resetting log in variables
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'), 200)
+        response = make_response(json.dumps(
+            'Current user is already connected.'), 200)
         response.headers['Content-Type'] = 'application/json'
     # Store the access token in the session for later use.
     login_session['access_token'] = credentials.access_token
@@ -126,126 +122,136 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += '"style="width:300px;height:300px;-webkit-border-radius:150px;">'
     flash("You are now logged in as %s" % login_session['username'])
     return output
 
 
-# ----------- independent using Fullstack Stack Foundations Course to develop understandings ----------- #
-@app.route('/')
-@app.route('/home')
-def Home():
-    session = DBSession()
-    print login_session
+
+@APP.route('/')
+@APP.route('/home')
+def home():
+    """renders home page"""
     return render_template('regionalcollegeslocation.html')
 
 # coded with the OpenWeatherMap api and aid from https://www.youtube.com/watch?v=lWA0GgUN8kg
-@app.route('/weather')
-def Weather():
-    session = DBSession()
-    cities = session.query(City).all()
-    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=bfb6673821c8d44c9ba923d72274ef24'
+@APP.route('/weather')
+def weather_call():
+    """makes calls to weather API"""
+    cities = SESSION.query(City).all()
+    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=\
+    imperial&appid=bfb6673821c8d44c9ba923d72274ef24'
     weather_data = []
     for city in cities:
-        r = requests.get(url.format(city.name)).json()
+        r_variable = requests.get(url.format(city.name)).json()
 
         weather = {
             'city': city,
-            'temperature': r['main']['temp'],
-            'description': r['weather'][0]['description'] ,
-            'icon': r['weather'][0]['icon']
+            'temperature': r_variable['main']['temp'],
+            'description': r_variable['weather'][0]['description'],
+            'icon': r_variable['weather'][0]['icon']
         }
         weather_data.append(weather)
-    return render_template('weather.html', weather_data=weather_data)
+        return render_template('weather.html', weather_data=weather_data)
 
-@app.route('/cities', methods=['GET', 'POST'])
-def NewCity():
-    session = DBSession()
-    AllCities = session.query(City).all()
+
+@APP.route('/cities', methods=['GET', 'POST'])
+def new_city():
+    """Calls city API to find weather for a new city"""
     if request.method == 'POST':
         url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=bfb6673821c8d44c9ba923d72274ef24'
-        r = requests.get(url.format(request.form['name'])).json()
-        print r
-        # valid city
-        if r['cod'] == 200:
-            NewCity = City(name = request.form['name'])
-            session.add(NewCity)
-            session.commit()
-            return redirect(url_for('Weather'))
+        r_variable = requests.get(url.format(request.form['name'])).json()
+        if r_variable['cod'] == 200:
+            new_city_variable = City(name=request.form['name'])
+            SESSION.add(new_city_variable)
+            SESSION.commit()
+            data=SESSION.query(City).filter_by(name=request.form['name'])
+            print data
+            return redirect(url_for('weather_call'))
         # Need to handle invalid city input
-        else:
-            flash('New City %s is invalid' %request.form['name'])
-            return render_template('new_city.html')
-
-    else:
+        flash('New City %s is invalid' % request.form['name'])
         return render_template('new_city.html')
+    return render_template('new_city.html')
 
-# coded with the OpenWeatherMap api and inspired by work done at https://www.youtube.com/watch?v=lWA0GgUN8kg (code written independently)
-@app.route('/college/<int:college_id>/<int:college_city_id>/')
-def eachCollege(college_id, college_city_id):
-    session = DBSession()
-    colleges = session.query(College).filter_by(college_id=college_id).one()
-    city_college = session.query(College).filter_by(college_city_id=college_city_id).one()
+@APP.route('/college/<int:college_id>/<int:college_city_id>/')
+def each_college(college_id, college_city_id):
+    """queries a college and its information"""
+    colleges = SESSION.query(College).filter_by(college_id=college_id).one()
+    city_college = SESSION.query(College).filter_by(
+        college_city_id=college_city_id).one()
     city = city_college.college_city.name
-    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=bfb6673821c8d44c9ba923d72274ef24'
-    r = requests.get(url.format(city)).json()
-    weather = {
-    'city': city,
-    'temperature': r['main']['temp'],
-    'description': r['weather'][0]['description'] ,
-    'icon': r['weather'][0]['icon']
-    }
-    print(weather)
-    return render_template('eachcollegepage.html', college_id=college_id, city=city, colleges=colleges, weather=weather)
+    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=\
+    imperial&appid=bfb6673821c8d44c9ba923d72274ef24'
+    r_variable = requests.get(url.format(city)).json()
+    weather = {'city': city,
+               'temperature': r_variable['main']['temp'],
+               'description': r_variable['weather'][0]['description'],
+               'icon': r_variable['weather'][0]['icon']
+              }
+    print weather
+    return render_template('eachcollegepage.html', college_id=college_id, city=city,
+                           colleges=colleges, weather=weather)
 
-@app.route('/colleges')
-def allColleges():
-    session = DBSession()
-    colleges = session.query(College).all()
-    return render_template('allcollegepage.html',colleges=colleges)
 
-@app.route('/college/new', methods=['GET', 'POST'])
-def NewCollege():
-    session = DBSession()
+@APP.route('/colleges')
+def all_colleges():
+    """queries all colleges"""
+    colleges = SESSION.query(College).all()
+    return render_template('allcollegepage.html', colleges=colleges)
+
+
+@APP.route('/college/new', methods=['GET', 'POST'])
+def new_college():
+    """makes a new college using form data"""
     if "username" not in login_session:
         return redirect('/login')
-    else:
-        colleges = session.query(College).all()
-        cities = session.query(City).all()
-        if request.method =='POST':
-            NewCollege = College(college_city = request.form['college_city'], tours = request.form['tours'], name = request.form['name'], image_filename = request.form['image_filename'], college_region = request.form['college_region'], location = request.form['location'], phone_number = request.form['phone_number'], college_type = request.form['college_type'], notes = request.form['notes'])
-            session.add(NewCollege)
-            flash('New College %s Successfully Created' %NewCollege.name)
-            session.commit()
-            return redirect(url_for('allcollegepage.html',colleges=colleges))
-        else:
-            return render_template('new_college.html', colleges=colleges, cities=cities)
-
-@app.route('/Forum', methods=['GET', 'POST'])
-def Forum():
-    session = DBSession()
-    AllPosts = session.query(Post).all()
-    return render_template('allposts.html', AllPosts=AllPosts)
-
-@app.route('/posts', methods=['GET', 'POST'])
-def NewPost():
-    session = DBSession()
-    AllPosts = session.query(Post).all()
+    colleges = SESSION.query(College).all()
+    cities = SESSION.query(City).all()
     if request.method == 'POST':
-        NewPost = Post(author = request.form['author'], college = request.form['college'], date = request.form['date'], notes = request.form['notes'])
-        session.add(NewPost)
-        flash('New Post by %s Successfully Published!' %NewPost.author)
-        session.commit()
-        return redirect(url_for('Forum'))
-    else:
-        return render_template('new_post.html', AllPosts=AllPosts)
+        new_college_object = College(college_city=request.form['college_city'],
+                                     tours=request.form['tours'], name=request.form['name'],
+                                     image_filename=request.form['image_filename'],
+                                     college_region=request.form['college_region'],
+                                     location=request.form['location'],
+                                     phone_number=request.form['phone_number'],
+                                     college_type=request.form['college_type'],
+                                     notes=request.form['notes'])
+        SESSION.add(new_college_object)
+        flash('New College %s Successfully Created' % new_college_object.name)
+        SESSION.commit()
+        return redirect(url_for('allcollegepage.html', colleges=colleges))
 
-@app.route('/posts/edit/<int:id>/', methods=['GET', 'POST'])
-def editPost():
-    session = DBSession()
-    AllPosts = session.query(Post).all()
-    posts = session.query(Post).filter_by(id=id).first()
-    editPost = session.query(Post).filter_by(id=id).one()
+    return render_template('new_college.html', colleges=colleges, cities=cities)
+
+
+@APP.route('/Forum', methods=['GET', 'POST'])
+def forum():
+    """provides all posts to html template"""
+    all_posts = SESSION.query(Post).all()
+    return render_template('allposts.html', all_posts=all_posts)
+
+
+@APP.route('/posts', methods=['GET', 'POST'])
+def new_post():
+    """makes new post with form data"""
+    all_posts = SESSION.query(Post).all()
+    if request.method == 'POST':
+        new_post_variable = Post(author=request.form['author'], college=request.form['college'],
+                                 date=request.form['date'], notes=request.form['notes'])
+        SESSION.add(new_post_variable)
+        flash('New Post by %s Successfully Published!' % new_post_variable.author)
+        SESSION.commit()
+        return redirect(url_for('forum'))
+
+    return render_template('new_post.html', all_posts=all_posts)
+
+
+@APP.route('/posts/edit/<int:id>/', methods=['GET', 'POST'])
+def edit_post():
+    """allows user to edit post"""
+    AllPosts = SESSION.query(Post).all()
+    posts = SESSION.query(Post).filter_by(id=id).first()
+    editPost = SESSION.query(Post).filter_by(id=id).one()
     if request.method == 'POST':
         if request.form['author']:
             editPost.author = request.form['author']
@@ -255,20 +261,22 @@ def editPost():
             editPost.date = request.form['date']
         if request.form['notes']:
             editPost.notes = request.form['notes']
-        session.add(editedPost)
-        session.commit()
-        return redirect(url_for('Forum'))
+        SESSION.add(editedPost)
+        SESSION.commit()
+        return redirect(url_for('forum'))
     else:
         return render_template('edit_post.html', AllPosts=AllPosts, posts=posts)
 
-@app.route('/tours')
-def allTours():
-    session = DBSession()
-    tours = session.query(Tours).all()
+
+@APP.route('/tours')
+def all_tours():
+    """provides all tours to html template"""
+    tours = SESSION.query(Tours).all()
     return render_template('alltours.html', tours=tours)
+
 
 # Udacity course on Full Stack Foundations
 if __name__ == '__main__':
-    app.secret_key = 'super_secret_key'
-    app.debug = True
-    app.run(host = '0.0.0.0', port = 5000)
+    APP.secret_key = 'super_secret_key'
+    APP.debug = True
+    APP.run(host='0.0.0.0', port=5000)

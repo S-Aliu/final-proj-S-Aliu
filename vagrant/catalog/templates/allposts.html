@@ -16,7 +16,7 @@
     {% endif %}
     {% endwith %}
     <div class="row" style="padding: 25px 50px 100px 150px;">
-      {% for p in AllPosts %}
+      {% for p in all_posts %}
       <div class="card" style="width: 18rem;">
         <div class="card-body">
           <h5 class="card-title">{{p.author}}'s thoughts on {{p.college}}</h5>
@@ -33,7 +33,7 @@
         <div class="card-body">
           <h5 class="card-title">Add your own comment!</h5>
           <h6 class="card-subtitle mb-2 text-muted">Your name here</h6>
-          <a href="{{url_for('NewPost')}}" class="btn btn-primary">Write a review...</a>
+          <a href="{{url_for('new_post')}}" class="btn btn-primary">Write a review...</a>
         </div>
       </div>
     </div>

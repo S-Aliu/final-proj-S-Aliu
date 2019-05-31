@@ -19,13 +19,13 @@
 </head>
 
 <nav class="navbar navbar-dark bg-dark text-light">
-  <a class="navbar-brand" href="{{url_for('Home')}}">
+  <a class="navbar-brand" href="{{url_for('home')}}">
     <img src="../static/Cheetah.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
     &nbsp &nbsp Lightspeed College Search
   </a>
   <a class="nav-item nav-link text-light" href="{{url_for('allColleges')}}">Colleges</a>
   <a class="nav-item nav-link text-light" href="{{url_for('allTours')}}">Tours</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('Forum')}}">Forum</a>
+  <a class="nav-item nav-link text-light" href="{{url_for('forum')}}">Forum</a>
   <a class="nav-item nav-link text-light" href="#">Login</a>
 
 </nav>
@@ -40,7 +40,7 @@
       <hr class="style15" style="margin-bottom: 30px;">
 
       <div class="row" >
-        <div class="col-md-6" style="margin-right: 30px;">
+        <div class="col-md-6">
           <div class="card" style="width: 25rem; max-height: 1000px;">
             <img class="card-img-top" src="../static/GooglePlus-logos-02-980x980.png" alt="Card image cap">
             <div class="card-body">
@@ -55,10 +55,9 @@
             <div class="col-md-4">
             </div>
           </div>
-        </div>
-        <div class="col-md-6">
-          <div id="result"></div>
-
+          <div class="col-md-6">
+            <div id="result"></div>
+          </div>
         </div>
         </div>
         </div>
