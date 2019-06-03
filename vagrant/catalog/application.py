@@ -1,20 +1,18 @@
-"""houses functions"""
+"""serves Flask web application on specified port"""
 import os
-from flask import Flask, render_template, redirect, request, url_for, flash, jsonify
-from flask import send_from_directory, current_app
-from flask import session as login_session
 import random
 import string
-from database_setup import College, Region, Base, User, Tours, Post, City
-from sqlalchemy import create_engine, asc
+import json
+from signal import signal, SIGPIPE, SIG_DFL
+from flask import Flask, render_template, redirect, request, url_for, flash, make_response
+from flask import session as login_session
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 import httplib2
-import json
-from flask import make_response
 import requests
-from signal import signal, SIGPIPE, SIG_DFL
+from database_setup import College, Region, Base, User, Tours, Post, City
 signal(SIGPIPE, SIG_DFL)
 
 APP = Flask(__name__)
@@ -48,7 +46,7 @@ def showlogin():
 
 @APP.route('/gconnect', methods=['GET', 'POST'])
 def gconnect():
-    """signs in using google provider"""
+    """sign in using google provider"""
     print login_session['state']
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -131,20 +129,19 @@ def gconnect():
 @APP.route('/')
 @APP.route('/home')
 def home():
-    """renders home page"""
+    """render home page"""
     return render_template('regionalcollegeslocation.html')
 
 # coded with the OpenWeatherMap api and aid from https://www.youtube.com/watch?v=lWA0GgUN8kg
 @APP.route('/weather')
 def weather_call():
-    """makes calls to weather API"""
+    """make calls to weather API"""
     cities = SESSION.query(City).all()
     url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=\
     imperial&appid=bfb6673821c8d44c9ba923d72274ef24'
     weather_data = []
     for city in cities:
         r_variable = requests.get(url.format(city.name)).json()
-
         weather = {
             'city': city,
             'temperature': r_variable['main']['temp'],
@@ -152,21 +149,20 @@ def weather_call():
             'icon': r_variable['weather'][0]['icon']
         }
         weather_data.append(weather)
-        return render_template('weather.html', weather_data=weather_data)
+    return render_template('weather.html', weather_data=weather_data)
 
 
 @APP.route('/cities', methods=['GET', 'POST'])
 def new_city():
-    """Calls city API to find weather for a new city"""
+    """Call city API to find weather for a new city"""
     if request.method == 'POST':
-        url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=bfb6673821c8d44c9ba923d72274ef24'
+        url = 'http://api.openweathermap.org/data/2.5/weather?q\
+        ={}&units=imperial&appid=bfb6673821c8d44c9ba923d72274ef24'
         r_variable = requests.get(url.format(request.form['name'])).json()
         if r_variable['cod'] == 200:
             new_city_variable = City(name=request.form['name'])
             SESSION.add(new_city_variable)
             SESSION.commit()
-            data=SESSION.query(City).filter_by(name=request.form['name'])
-            print data
             return redirect(url_for('weather_call'))
         # Need to handle invalid city input
         flash('New City %s is invalid' % request.form['name'])
@@ -175,7 +171,7 @@ def new_city():
 
 @APP.route('/college/<int:college_id>/<int:college_city_id>/')
 def each_college(college_id, college_city_id):
-    """queries a college and its information"""
+    """query a college and its information"""
     colleges = SESSION.query(College).filter_by(college_id=college_id).one()
     city_college = SESSION.query(College).filter_by(
         college_city_id=college_city_id).one()
@@ -195,14 +191,14 @@ def each_college(college_id, college_city_id):
 
 @APP.route('/colleges')
 def all_colleges():
-    """queries all colleges"""
+    """query all colleges"""
     colleges = SESSION.query(College).all()
     return render_template('allcollegepage.html', colleges=colleges)
 
 
 @APP.route('/college/new', methods=['GET', 'POST'])
 def new_college():
-    """makes a new college using form data"""
+    """make a new college using form data"""
     if "username" not in login_session:
         return redirect('/login')
     colleges = SESSION.query(College).all()
@@ -226,14 +222,14 @@ def new_college():
 
 @APP.route('/Forum', methods=['GET', 'POST'])
 def forum():
-    """provides all posts to html template"""
+    """provide all posts to html template"""
     all_posts = SESSION.query(Post).all()
     return render_template('allposts.html', all_posts=all_posts)
 
 
 @APP.route('/posts', methods=['GET', 'POST'])
 def new_post():
-    """makes new post with form data"""
+    """make new post with form data"""
     all_posts = SESSION.query(Post).all()
     if request.method == 'POST':
         new_post_variable = Post(author=request.form['author'], college=request.form['college'],
@@ -248,29 +244,29 @@ def new_post():
 
 @APP.route('/posts/edit/<int:id>/', methods=['GET', 'POST'])
 def edit_post():
-    """allows user to edit post"""
-    AllPosts = SESSION.query(Post).all()
+    """allow user to edit post"""
+    all_post = SESSION.query(Post).all()
     posts = SESSION.query(Post).filter_by(id=id).first()
-    editPost = SESSION.query(Post).filter_by(id=id).one()
+    edit_post_item = SESSION.query(Post).filter_by(id=id).one()
     if request.method == 'POST':
         if request.form['author']:
-            editPost.author = request.form['author']
+            edit_post_item.author = request.form['author']
         if request.form['college']:
-            editPost.college = request.form['college']
+            edit_post_item.college = request.form['college']
         if request.form['date']:
-            editPost.date = request.form['date']
+            edit_post_item.date = request.form['date']
         if request.form['notes']:
-            editPost.notes = request.form['notes']
-        SESSION.add(editedPost)
+            edit_post_item.notes = request.form['notes']
+        SESSION.add(edit_post_item)
         SESSION.commit()
         return redirect(url_for('forum'))
     else:
-        return render_template('edit_post.html', AllPosts=AllPosts, posts=posts)
+        return render_template('edit_post.html', all_post=all_post, posts=posts)
 
 
 @APP.route('/tours')
 def all_tours():
-    """provides all tours to html template"""
+    """provide all tours to html template"""
     tours = SESSION.query(Tours).all()
     return render_template('alltours.html', tours=tours)
 
