@@ -1,0 +1,36 @@
+<!-- coded independently referencing Udacity Full Stack foundations tutorials to understand how to call information from database  -->
+
+{% extends "base.html" %}
+{% block hype %}The internet is forever.{% endblock %}
+{% block instructions %} But, lucky, you can still edit your post here! {% endblock %}
+{% block content %}
+<div style="margin-top: 30px;margin-left: 5px;margin-bottom:100px;">
+  <div class="container">
+    <form action="{{url_for('editPost', id = post.id)}}" method='POST'>
+      <div class="form-group">
+        <label>Author:</label>
+        <input class="form-control" type='text' size='55' name='author' placeholder='{{post.author}}'>
+      </div>
+
+      <div class="form-group">
+        <label>College:</label>
+        <input class="form-control" type='text' size='55' name='college' placeholder='{{post.college}}'>
+      </div>
+
+      <div class="form-group">
+        <label>date:</label>
+        <input class="form-control" type='text' size='55' name='date' placeholder='{{post.date}}'>
+      </div>
+
+      <div class="form-group">
+        <label>Notes:</label>
+        <input class="form-control" type='text' size='55' name='notes' placeholder='{{post.notes}}'>
+      </div>
+
+      <br>
+      <!-- <input type='submit' value='Edit'> -->
+      <button type="submit" class="btn btn-primary">Edit</button><span> </span><a class="btn btn-secondary" href='{{url_for('Forum')}}'>Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}
