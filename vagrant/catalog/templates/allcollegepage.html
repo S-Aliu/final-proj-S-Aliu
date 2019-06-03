@@ -21,7 +21,15 @@
       &nbsp
       &nbsp
       {% endfor %}
-<br>
-
+      <br>
+      <br>
+      <div class="card mt-3 mr-1 " style="width: 18rem; height: 150px;">
+        <div class="card-body">
+          <h5 class="card-title"> Don't see your college? Add it here!</h5>
+          <h6 class="card-subtitle mb-2 text-muted">College name here</h6>
+          <a href="{{url_for('NewCollege')}}" class="btn btn-primary">Add a college</a>
+        </div>
+      </div>
     </div>
-{% endblock %}
+  </div>
+  {% endblock %}
