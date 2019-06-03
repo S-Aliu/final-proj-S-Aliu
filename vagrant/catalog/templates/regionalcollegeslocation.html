@@ -1,9 +1,19 @@
-
 {% extends "base.html" %}
 {% block head %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul style="	background-color: #36D320;width:100%;text-decoration: none;">
+  {% for message in messages %}
+  <li style="list-style-type: none;text-align: center;"> <strong> {{ message }} </strong> </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+
+<!-- API to adjust ap sizes -->
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles.css') }}">
-<link rel="icon" href="../static/Cheetah.jpg" type="image/x-icon"/>
+<link rel="icon" href="../static/Cheetah.jpg" type="image/x-icon" />
 <title>Lightspeed College Search</title>
 
 <!-- using Udacity Google APIs course -->
@@ -42,6 +52,7 @@
 {% block instructions %}With <span class="font-italic">Lightspeed College Search </span>® viewing, adding, editing, and deleting information about colleges has never been easier!{% endblock %}
 {% block content %}
 <div style="margin-top: 50px;margin-left: -300px;margin-bottom:500px;">
+
   <body>
     <div class="container">
       <div class="row">
@@ -53,11 +64,12 @@
               <input id="hide-listings" type="button" value="Hide Listings">
             </div>
           </div>
-      </div>
-      <div class="col-md-6">
-        <!-- Udacity Google APIs course  referenced-->
-        <div id="map"></div>
-      </div>
+        </div>
+        <div style="margin-left:20px;">
+          <!-- Udacity Google APIs course  referenced-->
+          <div id="map"></div>
+        </div>
+
       </div>
     </div>
 
@@ -186,7 +198,7 @@
 
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCooqoWpl14FzJNfcdRjqAT8kSSgnajzj8&v=3&callback=initMap">
     </script>
-<!-- end of Udacity Google API course referencing  -->
+    <!-- end of Udacity Google API course referencing  -->
   </body>
 </div>
 

@@ -1,5 +1,8 @@
-<!-- coded independently referencing Udacity Full Stack foundations tutorials to understand how to call information from database  -->
-<html>
+
+{% extends "base.html" %}
+{% block hype %}New horizons await.{% endblock %}
+{% block instructions %}Search for an city below to see its weather. Road trip plans just got a whole lot easier.{% endblock %}
+{% block content %}
 
 <head>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
@@ -17,26 +20,8 @@
   </script>
   <!--END GOOGLE PLUS SIGN IN SCRIPT-->
 </head>
-
-<nav class="navbar navbar-dark bg-dark text-light">
-  <a class="navbar-brand" href="{{url_for('home')}}">
-    <img src="../static/Cheetah.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
-    &nbsp &nbsp Lightspeed College Search
-  </a>
-  <a class="nav-item nav-link text-light" href="{{url_for('allColleges')}}">Colleges</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('allTours')}}">Tours</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('forum')}}">Forum</a>
-  <a class="nav-item nav-link text-light" href="#">Login</a>
-
-</nav>
-
-<body>
   <div style="margin-top: 30px;margin-left: 5px;margin-bottom:100px;">
     <div class="container">
-      <section class="jumbotron text-center bg-light">
-        <h1 class="jumbotron-heading">Login</h1>
-        <p class="lead text-muted">Login to unlock more functionality</p>
-      </section>
       <hr class="style15" style="margin-bottom: 30px;">
 
       <div class="row" >
@@ -92,6 +77,4 @@
   });
 </script>
 
-</body>
-
-</html>
+{% endblock %}
