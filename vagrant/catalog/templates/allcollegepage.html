@@ -6,7 +6,7 @@
 {% block content %}
 <div style="margin-top: 30px;margin-left: 5px;margin-bottom:100px;">
   <div class="container">
-    
+
 
     <div class="row" style="padding: 25px 50px 100px 150px;">
       {% for c in colleges %}
@@ -27,7 +27,7 @@
         <div class="card-body">
           <h5 class="card-title"> Don't see your college? Add it here!</h5>
           <h6 class="card-subtitle mb-2 text-muted">College name here</h6>
-          <a href="{{url_for('NewCollege')}}" class="btn btn-primary">Add a college</a>
+          <a href="{{url_for('new_college')}}" class="btn btn-primary">Add a college</a>
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@
 
   <div class="card">
 
-    <form action="{{url_for('NewCollege',colleges=colleges)}}" method='POST' enctype="multipart/form-data">
+    <form action="{{url_for('new_college',colleges=colleges, cities=cities, regions=regions, all_tours=all_tours)}}" method='POST' enctype="multipart/form-data">
 
       <div class="form-group" style="width:600px;padding-left:20px;padding-top:30px;">
         <label>Name:</label>
@@ -15,14 +15,14 @@
 
       <div class="form-group" style="width:600px;padding-left:20px;padding-top:30px;">
         <label>Upload an Image:</label>
-        <input type="file" name="image" required='required'></input>
+        <input type="file" name="image_filename" required='required'></input>
       </div>
       <p style="padding-left:20px;padding-top:30px;">Region:</p>
 
-      <div style="width:390px;padding-left:20px;"><select class="custom-select">
+      <div style="width:390px;padding-left:20px;"><select  name="college_region" class="custom-select">
           <option value="0">Select a region</option>
           {% for r in regions %}
-          <option value="{{r.id}}" name="region">{{r.name}}</option>
+          <option value="{{r.id}}">{{r.name}}</option>
           {% endfor %}
         </select></div>
 
@@ -30,15 +30,24 @@
         <label>Address:</label>
         <input class="form-control" type='text' size='55' name='location' required='required'></input>
       </div>
-
       <p style="padding-left:20px;padding-top:30px;">City:</p>
 
-      <div style="width:390px;padding-left:20px;"><select class="custom-select">
+      <div style="width:390px;padding-left:20px;"><select name="college_city" class="custom-select">
           <option value="0">Select a city</option>
           {% for c in cities %}
-          <option value="{{c.id}}" name="city">{{c.name}}</option>
+          <option value="{{c.id}}">{{c.name}}</option>
           {% endfor %}
         </select></div>
+<br>
+<p style="padding-left:20px;padding-top:30px;">Tours:</p>
+      <div style="width:390px;padding-left:20px;"><select name="tours" class="custom-select">
+          <option value="0">Select a tour</option>
+          {% for t in all_tours %}
+          <option value="{{t.id}}">{{t.type}}</option>
+          {% endfor %}
+        </select></div>
+
+
 
       <div class="form-group" style="width:600px;padding-left:20px;padding-top:30px;">
         <label>Phone Number:</label>
@@ -54,15 +63,11 @@
         <label>Notes:</label>
         <input class="form-control" type='text' size='55' name='notes' required='required'></input>
       </div>
-
-      <input class="btn btn-outline-danger btn-lg btn-block" type="reset" value='Reset All'></input>
       <br>
 
       <input type="submit" value="Add College">
-      <!-- <submit class="button is-info"> Add College</submit> -->
-
-      <!-- <a class="btn btn-primary" href="{{url_for('allColleges')}}" role="button" style="margin-bottom:20px;margin-left:220px;margin-right:50px;">Create</a>
-      <a class="btn btn-primary" href="{{url_for('NewCollege')}}" role="button" style="margin-bottom:20px;margin-left:400px;">Cancel</a> -->
+      <br>
+      <input class="btn btn-outline-danger btn-lg btn-block" type="reset" value='Reset All'></input>
 
     </form>
   </div>

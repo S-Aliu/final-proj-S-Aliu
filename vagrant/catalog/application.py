@@ -4,7 +4,7 @@ import random
 import string
 import json
 from signal import signal, SIGPIPE, SIG_DFL
-from flask import Flask, render_template, redirect, request, url_for, flash, make_response
+from flask import Flask, render_template, redirect, request, url_for, flash, make_response, current_app
 from flask import session as login_session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -203,10 +203,16 @@ def new_college():
         return redirect('/login')
     colleges = SESSION.query(College).all()
     cities = SESSION.query(City).all()
+    regions = SESSION.query(Region).all()
+    all_tours = SESSION.query(Tours).all()
     if request.method == 'POST':
+        file = request.files['image_filename']
+        f= os.path.join(current_app.root_path, APP.config['UPLOAD_FOLDER'], file.filename)
+        file.save(f)
+        file_n = file.filename
         new_college_object = College(college_city=request.form['college_city'],
                                      tours=request.form['tours'], name=request.form['name'],
-                                     image_filename=request.form['image_filename'],
+                                     image_filename=file_n,
                                      college_region=request.form['college_region'],
                                      location=request.form['location'],
                                      phone_number=request.form['phone_number'],
@@ -215,9 +221,9 @@ def new_college():
         SESSION.add(new_college_object)
         flash('New College %s Successfully Created' % new_college_object.name)
         SESSION.commit()
-        return redirect(url_for('allcollegepage.html', colleges=colleges))
+        return redirect(url_for('allcollegepage.html', colleges=colleges, regions=regions))
 
-    return render_template('new_college.html', colleges=colleges, cities=cities)
+    return render_template('new_college.html', colleges=colleges, cities=cities, regions=regions, all_tours=all_tours)
 
 
 @APP.route('/Forum', methods=['GET', 'POST'])
@@ -260,8 +266,9 @@ def edit_post():
         SESSION.add(edit_post_item)
         SESSION.commit()
         return redirect(url_for('forum'))
-    else:
+
         return render_template('edit_post.html', all_post=all_post, posts=posts)
+
 
 
 @APP.route('/tours')
