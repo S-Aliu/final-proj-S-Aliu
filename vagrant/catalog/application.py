@@ -210,10 +210,11 @@ def new_college():
         f= os.path.join(current_app.root_path, APP.config['UPLOAD_FOLDER'], file.filename)
         file.save(f)
         file_n = file.filename
-        new_college_object = College(college_city=request.form['college_city'],
-                                     tours=request.form['tours'], name=request.form['name'],
+        print request.form['college_city']
+        new_college_object = College(college_city=City(name=request.form['college_city']),
+                                     tours=Tours(type=request.form['tours']), name=request.form['name'],
                                      image_filename=file_n,
-                                     college_region=request.form['college_region'],
+                                     college_region=Region(name=request.form['college_region']),
                                      location=request.form['location'],
                                      phone_number=request.form['phone_number'],
                                      college_type=request.form['college_type'],
@@ -221,7 +222,7 @@ def new_college():
         SESSION.add(new_college_object)
         flash('New College %s Successfully Created' % new_college_object.name)
         SESSION.commit()
-        return redirect(url_for('allcollegepage.html', colleges=colleges, regions=regions))
+        return redirect(url_for('all_colleges', colleges=colleges, regions=regions))
 
     return render_template('new_college.html', colleges=colleges, cities=cities, regions=regions, all_tours=all_tours)
 
