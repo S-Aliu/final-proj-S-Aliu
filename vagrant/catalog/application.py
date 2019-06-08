@@ -357,7 +357,7 @@ def delete_post(id):
     if request.method == 'POST':
         SESSION.delete(item_to_delete)
         SESSION.commit()
-        flash('Deleted '+str(item_to_delete.author)+'post made on'+ str(item_to_delete.date))
+        flash('Deleted '+str(item_to_delete.author)+"'s post made on "+ str(item_to_delete.date))
         return redirect(url_for('forum'))
     return render_template('deletepost.html', post_delete=item_to_delete)
 
