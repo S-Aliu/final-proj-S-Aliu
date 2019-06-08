@@ -19,11 +19,18 @@
     <img src="../static/Cheetah.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
     &nbsp &nbsp Lightspeed College Search
   </a>
+  {% if 'username' in session %}
+  <a class="navbar-brand"><img src="{{user_img}}" height="37" width=auto style="margin-left:-5px;" class="rounded border border-white"></a>
+  {% endif %}
+  {% if 'username' not in session %}
+  <a  class="nav-item nav-link text-light" href='{{url_for('showlogin')}}'>Login</a>
+  {% else %}
+  <a class="nav-item nav-link text-light" href='{{url_for('disconnect')}}'>Logout</a>
+  {% endif %}
   <a class="nav-item nav-link text-light" href="{{url_for('all_colleges')}}">Colleges</a>
   <a class="nav-item nav-link text-light" href="{{url_for('all_tours')}}">Tours</a>
   <a class="nav-item nav-link text-light" href="{{url_for('forum')}}">Forum</a>
   <a class="nav-item nav-link text-light" href="{{url_for('weather_call')}}">Weather</a>
-  <a class="nav-item nav-link text-light" href="{{url_for('showlogin')}}">Login</a>
   {% endblock %}
 </nav>
 

@@ -6,15 +6,6 @@
 <div style="margin-top: 30px;margin-left: 5px;margin-bottom:100px;">
   <div class="container">
   <!-- add information about terms date picker list pick  -->
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul style="	background-color: #36D320;width:100%;text-decoration: none;">
-      {% for message in messages %}
-      <li style="list-style-type: none;text-align: center;"> <strong> {{ message }} </strong> </li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
     <div class="row" style="padding: 25px 50px 100px 150px;">
       {% for p in all_posts %}
       <div class="card" style="width: 18rem;">
@@ -22,8 +13,6 @@
           <h5 class="card-title">{{p.author}}'s thoughts on {{p.college}}</h5>
           <h6 class="card-subtitle mb-2 text-muted">{{p.date}}</h6>
           <p class="card-text">{{p.notes}}</p>
-            <a href="{{url_for('edit_post', id=p.id)}}" class="btn btn-primary">Edit</a>
-            &nbsp<a href="{{url_for('delete_post', id=p.id)}}" class="btn btn-primary">Delete</a>
         </div>
       </div>
       &nbsp

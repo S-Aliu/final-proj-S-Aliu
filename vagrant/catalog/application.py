@@ -289,7 +289,7 @@ def new_post():
     all_posts = SESSION.query(Post).all()
     if request.method == 'POST':
         new_post_variable = Post(author=request.form['author'], college=request.form['college'],
-                                 date=request.form['date'], notes=request.form['notes'])
+                                 date=request.form['date'], notes=request.form['notes'], user_id=login_session['user_id'])
         SESSION.add(new_post_variable)
         flash('New Post by %s Successfully Published!' % new_post_variable.author)
         SESSION.commit()
@@ -299,11 +299,15 @@ def new_post():
 
 
 @APP.route('/posts/edit/<int:id>/', methods=['GET', 'POST'])
-def edit_post():
+def edit_post(id):
     """allow user to edit post"""
-    all_post = SESSION.query(Post).all()
-    posts = SESSION.query(Post).filter_by(id=id).first()
+    all_posts = SESSION.query(Post).all()
     edit_post_item = SESSION.query(Post).filter_by(id=id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
+    if login_session['user_id'] != edit_post_item.user_id:
+        flash('You may only edit your own post.')
+        return redirect(url_for('forum'))
     if request.method == 'POST':
         if request.form['author']:
             edit_post_item.author = request.form['author']
@@ -316,8 +320,26 @@ def edit_post():
         SESSION.add(edit_post_item)
         SESSION.commit()
         return redirect(url_for('forum'))
+    else:
+        return render_template('editpost.html', post=edit_post_item)
 
-        return render_template('edit_post.html', all_post=all_post, posts=posts)
+
+@APP.route('/delete/<int:id>', methods=['GET', 'POST'])
+def delete_post(id):
+    """delete a post in the database"""
+    item_to_delete = SESSION.query(Post).filter_by(id=id).one()
+    all_posts = SESSION.query(Post).all()
+    if 'username' not in login_session:
+        return redirect('/login')
+    if login_session['user_id'] != item_to_delete.user_id:
+        flash('You may only delete your own post.')
+        return render_template('allposts.html', all_posts=all_posts)
+    if request.method == 'POST':
+        SESSION.delete(item_to_delete)
+        SESSION.commit()
+        flash('Deleted '+str(item_to_delete.author)+'post made on'+ str(item_to_delete.date))
+        return redirect(url_for('forum'))
+    return render_template('deletepost.html', post_delete=item_to_delete)
 
 
 

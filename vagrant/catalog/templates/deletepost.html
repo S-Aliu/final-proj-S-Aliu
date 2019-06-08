@@ -1,0 +1,39 @@
+
+
+{% extends "base.html" %}
+{% block hype %}Are you sure you would like to delete this post?{% endblock %}
+{% block instructions %} Theres no turning back... {% endblock %}
+{% block content %}
+
+<div style="margin-top: 30px;margin-left: 5px;margin-bottom:100px;">
+  <div class="container">
+
+
+<div class="row">
+  <div class="col-md-4"></div>
+  <div class="col-md-4">
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">{{post_delete.author}}'s thoughts on {{post_delete.college}}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{post_delete.date}}</h6>
+        <p class="card-text">{{post_delete.notes}}</p>
+
+          <form action="{{url_for('delete_post', id=post_delete.id)}}" method='POST'>
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a href="{{url_for('forum')}}" class="btn btn-secondary">Cancel</a>
+          </form>
+
+      </div>
+    </div>
+
+
+  </div>
+  <div class="col-md-4"></div>
+</div>
+
+
+  </div>
+  </div>
+
+
+{% endblock %}
