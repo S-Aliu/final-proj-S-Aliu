@@ -314,7 +314,7 @@ def edit_tour(id):
             edited_tour.virtual_tour = request.form['virtual_tour']
         SESSION.add(edited_tour)
         SESSION.commit()
-        flash('Edited '+str(edited_tour.type))
+        flash('Edited '+str(edited_tour.type)+ ' tour')
         return redirect(url_for('all_tours'))
     else:
         return render_template('edit_tour.html', id=id, edited_tour=edited_tour, tour=tour)
