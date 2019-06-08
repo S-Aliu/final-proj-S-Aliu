@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block hype %}Tours. Tours. College tours.{% endblock %}
+{% block instructions %} Fill out this form to edit your tour below! {% endblock %}
+{% block content %}
+<div style="margin-top: 30px;margin-left: 5px;margin-bottom:100px;">
+  <div class="container">
+    <form action="{{url_for('edit_tour', id=id)}}" method='POST'>
+      <h6>Type:</h6>
+      <p>{{tour.type}}</p>
+      <br>
+      <h6>Image:</h6>
+      <p>{{tour.image_tour}}</p>
+      <br>
+      <h6>Calendar:</h6>
+      <a href="{{tour.date}}">Calendar here</a>
+      <br>
+      <br>
+      <div class="form-group">
+        <label>Popularity:</label>
+        <input class="form-control" type='text' size='55' name='popularity' placeholder='{{tour.popularity}}'>
+      </div>
+      <div class="form-group">
+        <label>Virtual Tour:</label>
+        <input class="form-control" type='text' size='55' name='virtual_tour' placeholder='{{tour.virtual_tour}}'>
+      </div>
+      <div class="form-group">
+        <label>Notes:</label>
+        <input class="form-control" type='text' size='55' name='notes' placeholder='{{tour.notes}}'>
+      </div>
+      <br>
+      <!-- <input type='submit' value='Edit'> -->
+      <form action="{{url_for('edit_post',id=id)}}" method='POST'>
+        <button type="submit" class="btn btn-danger">Edit</button>
+        <a href='{{url_for('all_tours')}}' class="btn btn-secondary">Cancel</a>
+  </div>
+</div>
+{% endblock %}

@@ -298,6 +298,27 @@ def all_tours():
     tours = SESSION.query(Tours).all()
     return render_template('alltours.html', tours=tours)
 
+@APP.route('/tours/<int:id>/edit', methods=['GET', 'POST'])
+def edit_tour(id):
+    """allow user to edit tours"""
+    tour = SESSION.query(Tours).filter_by(id=id).first()
+    edited_tour = SESSION.query(Tours).filter_by(id=id).first()
+    if "username" not in login_session:
+        return redirect('/login')
+    if request.method == 'POST':
+        if request.form['notes']:
+            edited_tour.notes = request.form['notes']
+        if request.form['popularity']:
+            edited_tour.popularity = request.form['popularity']
+        if request.form['virtual_tour']:
+            edited_tour.virtual_tour = request.form['virtual_tour']
+        SESSION.add(edited_tour)
+        SESSION.commit()
+        flash('Edited '+str(edited_tour.type))
+        return redirect(url_for('all_tours'))
+    else:
+        return render_template('edit_tour.html', id=id, edited_tour=edited_tour, tour=tour)
+
 
 # Udacity course on Full Stack Foundations
 if __name__ == '__main__':
