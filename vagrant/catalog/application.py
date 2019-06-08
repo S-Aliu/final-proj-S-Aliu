@@ -114,6 +114,10 @@ def gconnect():
     login_session['picture'] = data["picture"]
     login_session['email'] = data["email"]
     login_session['provider'] = 'google'
+    user_id = getUserID(login_session['email'])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
@@ -124,7 +128,45 @@ def gconnect():
     flash("You are now logged in as %s" % login_session['username'])
     return output
 
+# revoke a current users login and reset their login session
+@APP.route('/gdisconnect')
+def gdisconnect():
+    access_token = login_session.get('access_token')
+    # if credentials object is empty then no user to disconnect from and will send error message
+    if access_token is None:
+        response = make_response(json.dumps('Current user not connected.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[0]
+    if result['status'] == '200':
+    # this will tell user if successfully disconnected
+        response = make_response(json.dumps('Successfully disconnected.'), 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    else:
+        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response.headers['Content-Type'] = 'application/json'
+        return response
 
+@APP.route('/disconnect')
+def disconnect():
+    if 'provider' in login_session:
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+        del login_session['user_id']
+        if login_session['provider'] == 'google':
+            gdisconnect()
+            del login_session['gplus_id']
+            del login_session['access_token']
+        del login_session['provider']
+        flash("You have successfully been logged out.")
+        return redirect(url_for('home'))
+    else:
+        flash("You were not logged in")
+        return redirect(url_for('home'))
 
 @APP.route('/')
 @APP.route('/home')
@@ -231,6 +273,8 @@ def new_college():
 def forum():
     """provide all posts to html template"""
     all_posts = SESSION.query(Post).all()
+    if 'username' not in login_session:
+        return render_template('publicallposts.html', all_posts=all_posts)
     return render_template('allposts.html', all_posts=all_posts)
 
 
@@ -277,6 +321,28 @@ def all_tours():
     """provide all tours to html template"""
     tours = SESSION.query(Tours).all()
     return render_template('alltours.html', tours=tours)
+
+
+# user functions
+def createUser(login_session):
+    newUser = User(name=login_session['username'], email=login_session['email'], picture=login_session['picture'])
+    SESSION.add(newUser)
+    SESSION.commit()
+    user = SESSION.query(User).filter_by(email=login_session['email']).one()
+    # saves current user and gets user id
+    return user.id
+
+def getUserInfo(user_id):
+    user = SESSION.query(User).filter_by(id=user_id).one()
+    return user
+
+def getUserID(email):
+    try:
+        user = SESSION.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
+
 
 
 # Udacity course on Full Stack Foundations
