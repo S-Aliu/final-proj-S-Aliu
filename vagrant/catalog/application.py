@@ -43,6 +43,11 @@ def showlogin():
     regions = SESSION.query(Region).all()
     return render_template('login.html', STATE=state, regions=regions)
 
+@APP.context_processor
+def inject_user_img():
+    if 'username' in login_session:
+        return dict(user_img=login_session['picture'])
+    return dict(user_img='none')
 
 @APP.route('/gconnect', methods=['GET', 'POST'])
 def gconnect():
