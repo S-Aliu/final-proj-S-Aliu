@@ -55,7 +55,8 @@ class Post(Base):
     id = Column(Integer, primary_key = True)
     date = Column(String(20))
     notes = Column(String(9999))
-
+    user = relationship(User)
+    user_id = Column(Integer,ForeignKey('user.id'))
 # class name will be in camel case
 class College(Base):
     __tablename__='college'
