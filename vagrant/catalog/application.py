@@ -223,7 +223,8 @@ def new_college():
                                      phone_number=request.form['phone_number'],
                                      college_type=request.form['college_type'],
                                      notes=request.form['notes'],
-                                     college_city_id=college_c.id)
+                                     college_city_id=college_c.id,
+                                     user_id=1)
         SESSION.add(new_college_object)
         flash('New College %s Successfully Created' % new_college_object.name)
         SESSION.commit()

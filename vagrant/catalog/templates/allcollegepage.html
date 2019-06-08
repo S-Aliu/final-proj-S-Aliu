@@ -4,6 +4,15 @@
 {% block hype %}More options. More resources.{% endblock %}
 {% block instructions %}Scroll down to search through our database of universities{% endblock %}
 {% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul style="	background-color: #D33F20;width:100%;text-decoration: none;">
+  {% for message in messages %}
+  <li style="list-style-type: none;text-align: center;"> <strong> {{ message }} </strong> </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
 <div style="margin-top: 30px;margin-left: 5px;margin-bottom:100px;">
   <div class="container">
 
@@ -16,6 +25,7 @@
           <h5 class="card-title">{{c.name}}</h5>
           <p class="card-text">{{c.location}}</p>
           <a href="{{url_for('each_college', college_id=c.college_id, college_city_id=c.college_city_id)}}" class="btn btn-primary">Learn More</a>
+          &nbsp <a href="{{url_for('delete_college', college_id=c.college_id)}}" class="btn btn-danger">Delete</a>
         </div>
       </div>
       &nbsp
