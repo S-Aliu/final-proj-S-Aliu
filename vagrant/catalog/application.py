@@ -4,7 +4,8 @@ import random
 import string
 import json
 from signal import signal, SIGPIPE, SIG_DFL
-from flask import Flask, render_template, redirect, request, url_for, flash, make_response, current_app
+from flask import Flask, render_template, redirect, request, url_for, flash
+from flask import make_response, current_app
 from flask import session as login_session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -33,10 +34,12 @@ Base.metadata.bind = ENGINE
 DBSESSION = sessionmaker(bind=ENGINE)
 SESSION = DBSESSION()
 
+
+
 # Udacity course on Authetication and Authorization
 @APP.route('/login')
 def showlogin():
-    """makes state token"""
+    """make state token"""
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     login_session['state'] = state
@@ -45,6 +48,7 @@ def showlogin():
 
 @APP.context_processor
 def inject_user_img():
+    """supply user image to all templates"""
     if 'username' in login_session:
         return dict(user_img=login_session['picture'])
     return dict(user_img='none')
@@ -119,9 +123,9 @@ def gconnect():
     login_session['picture'] = data["picture"]
     login_session['email'] = data["email"]
     login_session['provider'] = 'google'
-    user_id = getUserID(login_session['email'])
+    user_id = get_user_id(login_session['email'])
     if not user_id:
-        user_id = createUser(login_session)
+        user_id = create_user(login_session)
     login_session['user_id'] = user_id
     output = ''
     output += '<h1>Welcome, '
@@ -133,9 +137,29 @@ def gconnect():
     flash("You are now logged in as %s" % login_session['username'])
     return output
 
+
+# user functions
+def create_user(sess_obj):
+    """add login session information to database"""
+    new_user = User(name=sess_obj['username'], email=sess_obj['email'],
+                    picture=sess_obj['picture'])
+    SESSION.add(new_user)
+    SESSION.commit()
+    user = SESSION.query(User).filter_by(email=sess_obj['email']).one()
+    # saves current user and gets user id
+    return user.id
+
+def get_user_id(email):
+    """get user's id given email"""
+    try:
+        user = SESSION.query(User).filter_by(email=email).one()
+        return user.id
+    except StandardError:
+        return None
 # revoke a current users login and reset their login session
 @APP.route('/gdisconnect')
 def gdisconnect():
+    """disconnect user with google provider"""
     access_token = login_session.get('access_token')
     # if credentials object is empty then no user to disconnect from and will send error message
     if access_token is None:
@@ -143,20 +167,20 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
-    h = httplib2.Http()
-    result = h.request(url, 'GET')[0]
+    var_h = httplib2.Http()
+    result = var_h.request(url, 'GET')[0]
     if result['status'] == '200':
     # this will tell user if successfully disconnected
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
-    else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
-        response.headers['Content-Type'] = 'application/json'
-        return response
+    response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+    response.headers['Content-Type'] = 'application/json'
+    return response
 
 @APP.route('/disconnect')
 def disconnect():
+    """reset and clear login session"""
     if 'provider' in login_session:
         del login_session['username']
         del login_session['email']
@@ -254,8 +278,7 @@ def delete_college(college_id):
         SESSION.commit()
         flash('Deleted '+str(deleted_college.name))
         return redirect(url_for('all_colleges'))
-    else:
-        return render_template('deletecollege.html', college_id=college_id, college=college)
+    return render_template('deletecollege.html', college_id=college_id, college=college)
 
 @APP.route('/college/new', methods=['GET', 'POST'])
 def new_college():
@@ -265,18 +288,19 @@ def new_college():
     colleges = SESSION.query(College).all()
     cities = SESSION.query(City).all()
     regions = SESSION.query(Region).all()
-    all_tours = SESSION.query(Tours).all()
+    all_tours_objects = SESSION.query(Tours).all()
     if request.method == 'POST':
-        file = request.files['image_filename']
+        file_download = request.files['image_filename']
         college_r = SESSION.query(Region).filter_by(name=request.form['college_region']).first()
         college_c = SESSION.query(City).filter_by(name=request.form['college_city']).first()
         print request.form['college_city']
         college_t = SESSION.query(Tours).filter_by(type=request.form['tours']).first()
-        f= os.path.join(current_app.root_path, APP.config['UPLOAD_FOLDER'], file.filename)
-        file.save(f)
-        file_n = file.filename
+        var_f = os.path.join(current_app.root_path, APP.config['UPLOAD_FOLDER'],
+                             file_download.filename)
+        file_download.save(var_f)
+        file_n = file_download.filename
         new_college_object = College(name=request.form['name'],
-                                    college_city=college_c,
+                                     college_city=college_c,
                                      tours=college_t,
                                      image_filename=file_n,
                                      college_region=college_r,
@@ -291,7 +315,8 @@ def new_college():
         SESSION.commit()
         return redirect(url_for('all_colleges'))
 
-    return render_template('new_college.html', colleges=colleges, cities=cities, regions=regions, all_tours=all_tours)
+    return render_template('new_college.html', colleges=colleges, cities=cities, regions=regions,
+                           all_tours=all_tours_objects)
 
 
 @APP.route('/Forum', methods=['GET', 'POST'])
@@ -309,7 +334,8 @@ def new_post():
     all_posts = SESSION.query(Post).all()
     if request.method == 'POST':
         new_post_variable = Post(author=request.form['author'], college=request.form['college'],
-                                 date=request.form['date'], notes=request.form['notes'], user_id=login_session['user_id'])
+                                 date=request.form['date'], notes=request.form['notes'],
+                                 user_id=login_session['user_id'])
         SESSION.add(new_post_variable)
         flash('New Post by %s Successfully Published!' % new_post_variable.author)
         SESSION.commit()
@@ -318,11 +344,10 @@ def new_post():
     return render_template('new_post.html', all_posts=all_posts)
 
 
-@APP.route('/posts/edit/<int:id>/', methods=['GET', 'POST'])
-def edit_post(id):
+@APP.route('/posts/edit/<int:var_id>/', methods=['GET', 'POST'])
+def edit_post(var_id):
     """allow user to edit post"""
-    all_posts = SESSION.query(Post).all()
-    edit_post_item = SESSION.query(Post).filter_by(id=id).one()
+    edit_post_item = SESSION.query(Post).filter_by(id=var_id).one()
     if 'username' not in login_session:
         return redirect('/login')
     if login_session['user_id'] != edit_post_item.user_id:
@@ -344,10 +369,10 @@ def edit_post(id):
         return render_template('editpost.html', post=edit_post_item)
 
 
-@APP.route('/delete/<int:id>', methods=['GET', 'POST'])
-def delete_post(id):
+@APP.route('/delete/<int:variable_id>', methods=['GET', 'POST'])
+def delete_post(variable_id):
     """delete a post in the database"""
-    item_to_delete = SESSION.query(Post).filter_by(id=id).one()
+    item_to_delete = SESSION.query(Post).filter_by(id=variable_id).one()
     all_posts = SESSION.query(Post).all()
     if 'username' not in login_session:
         return redirect('/login')
@@ -369,11 +394,11 @@ def all_tours():
     tours = SESSION.query(Tours).all()
     return render_template('alltours.html', tours=tours)
 
-@APP.route('/tours/<int:id>/edit', methods=['GET', 'POST'])
-def edit_tour(id):
+@APP.route('/tours/<int:v_id>/edit', methods=['GET', 'POST'])
+def edit_tour(v_id):
     """allow user to edit tours"""
-    tour = SESSION.query(Tours).filter_by(id=id).first()
-    edited_tour = SESSION.query(Tours).filter_by(id=id).first()
+    tour = SESSION.query(Tours).filter_by(id=v_id).first()
+    edited_tour = SESSION.query(Tours).filter_by(id=v_id).first()
     if "username" not in login_session:
         return redirect('/login')
     if request.method == 'POST':
@@ -391,25 +416,6 @@ def edit_tour(id):
         return render_template('edit_tour.html', id=id, edited_tour=edited_tour, tour=tour)
 
 
-# user functions
-def createUser(login_session):
-    newUser = User(name=login_session['username'], email=login_session['email'], picture=login_session['picture'])
-    SESSION.add(newUser)
-    SESSION.commit()
-    user = SESSION.query(User).filter_by(email=login_session['email']).one()
-    # saves current user and gets user id
-    return user.id
-
-def getUserInfo(user_id):
-    user = SESSION.query(User).filter_by(id=user_id).one()
-    return user
-
-def getUserID(email):
-    try:
-        user = SESSION.query(User).filter_by(email=email).one()
-        return user.id
-    except:
-        return None
 
 
 
