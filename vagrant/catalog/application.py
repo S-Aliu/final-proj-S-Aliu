@@ -195,6 +195,20 @@ def all_colleges():
     colleges = SESSION.query(College).all()
     return render_template('allcollegepage.html', colleges=colleges)
 
+@APP.route('/college/<int:college_id>/delete', methods=['GET', 'POST'])
+def delete_college(college_id):
+    """"delete a college"""
+    if "username" not in login_session:
+        return redirect('/login')
+    college = SESSION.query(College).filter_by(college_id=college_id).first()
+    deleted_college = SESSION.query(College).filter_by(college_id=college_id).first()
+    if request.method == 'POST':
+        SESSION.delete(deleted_college)
+        SESSION.commit()
+        flash('Deleted '+str(deleted_college.name))
+        return redirect(url_for('all_colleges'))
+    else:
+        return render_template('deletecollege.html', college_id=college_id, college=college)
 
 @APP.route('/college/new', methods=['GET', 'POST'])
 def new_college():
