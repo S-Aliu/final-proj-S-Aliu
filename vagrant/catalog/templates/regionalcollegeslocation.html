@@ -1,14 +1,5 @@
 {% extends "base.html" %}
 {% block head %}
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<ul style="	background-color: #36D320;width:100%;text-decoration: none;">
-  {% for message in messages %}
-  <li style="list-style-type: none;text-align: center;"> <strong> {{ message }} </strong> </li>
-  {% endfor %}
-</ul>
-{% endif %}
-{% endwith %}
 
 <!-- API to adjust ap sizes -->
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
