@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block hype %}Are you sure you want to delete {{college.name}}?{% endblock %}
+{% block instructions %}Click below to finalize your deletion.{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-sm-3"><p></p></div>
+  <div class="col-sm-6">
+    <div class="card mb-4 box-shadow">
+      <!-- img -->
+      <img class="card-img-top rounded" src="{{url_for('static', filename=college.image_filename)}}" alt="Image not found" height="300px" />
+
+      <div class="card-body">
+        <p class="card-text">{{college.name}}</p>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="btn-group">
+            <!-- delete -->
+            <form action="{{url_for('delete_college',college_id=college.college_id)}}" method='POST'>
+              <button type="submit" class="btn btn-danger">Delete</button>
+              <a href='{{url_for('all_colleges')}}' class="btn btn-secondary">Cancel</a>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

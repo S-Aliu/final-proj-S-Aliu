@@ -5,7 +5,6 @@
 <div class="container">
 
   <div class="card">
-
     <form action="{{url_for('new_college',colleges=colleges, cities=cities, regions=regions, all_tours=all_tours)}}" method='POST' enctype="multipart/form-data">
 
       <div class="form-group" style="width:600px;padding-left:20px;padding-top:30px;">
@@ -35,7 +34,7 @@
       <div style="width:390px;padding-left:20px;"><select name="college_city" class="custom-select">
           <option value="0">Select a city</option>
           {% for c in cities %}
-          <option value="{{c.id}}">{{c.name}}</option>
+          <option value="{{c.name}}">{{c.name}}</option>
           {% endfor %}
         </select></div>
 <br>
@@ -43,7 +42,7 @@
       <div style="width:390px;padding-left:20px;"><select name="tours" class="custom-select">
           <option value="0">Select a tour</option>
           {% for t in all_tours %}
-          <option value="{{t.id}}">{{t.type}}</option>
+          <option value="{{t.type}}">{{t.type}}</option>
           {% endfor %}
         </select></div>
 

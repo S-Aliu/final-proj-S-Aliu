@@ -219,9 +219,9 @@ def new_city():
 @APP.route('/college/<int:college_id>/<int:college_city_id>/')
 def each_college(college_id, college_city_id):
     """query a college and its information"""
-    colleges = SESSION.query(College).filter_by(college_id=college_id).one()
+    colleges = SESSION.query(College).filter_by(college_id=college_id).first()
     city_college = SESSION.query(College).filter_by(
-        college_city_id=college_city_id).one()
+        college_city_id=college_city_id).first()
     city = city_college.college_city.name
     url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=\
     imperial&appid=bfb6673821c8d44c9ba923d72274ef24'
@@ -242,6 +242,20 @@ def all_colleges():
     colleges = SESSION.query(College).all()
     return render_template('allcollegepage.html', colleges=colleges)
 
+@APP.route('/college/<int:college_id>/delete', methods=['GET', 'POST'])
+def delete_college(college_id):
+    """"delete a college"""
+    if "username" not in login_session:
+        return redirect('/login')
+    college = SESSION.query(College).filter_by(college_id=college_id).first()
+    deleted_college = SESSION.query(College).filter_by(college_id=college_id).first()
+    if request.method == 'POST':
+        SESSION.delete(deleted_college)
+        SESSION.commit()
+        flash('Deleted '+str(deleted_college.name))
+        return redirect(url_for('all_colleges'))
+    else:
+        return render_template('deletecollege.html', college_id=college_id, college=college)
 
 @APP.route('/college/new', methods=['GET', 'POST'])
 def new_college():
@@ -254,22 +268,28 @@ def new_college():
     all_tours = SESSION.query(Tours).all()
     if request.method == 'POST':
         file = request.files['image_filename']
+        college_r = SESSION.query(Region).filter_by(name=request.form['college_region']).first()
+        college_c = SESSION.query(City).filter_by(name=request.form['college_city']).first()
+        print request.form['college_city']
+        college_t = SESSION.query(Tours).filter_by(type=request.form['tours']).first()
         f= os.path.join(current_app.root_path, APP.config['UPLOAD_FOLDER'], file.filename)
         file.save(f)
         file_n = file.filename
-        print request.form['college_city']
-        new_college_object = College(college_city=City(name=request.form['college_city']),
-                                     tours=Tours(type=request.form['tours']), name=request.form['name'],
+        new_college_object = College(name=request.form['name'],
+                                    college_city=college_c,
+                                     tours=college_t,
                                      image_filename=file_n,
-                                     college_region=Region(name=request.form['college_region']),
+                                     college_region=college_r,
                                      location=request.form['location'],
                                      phone_number=request.form['phone_number'],
                                      college_type=request.form['college_type'],
-                                     notes=request.form['notes'])
+                                     notes=request.form['notes'],
+                                     college_city_id=college_c.id,
+                                     user_id=1)
         SESSION.add(new_college_object)
         flash('New College %s Successfully Created' % new_college_object.name)
         SESSION.commit()
-        return redirect(url_for('all_colleges', colleges=colleges, regions=regions))
+        return redirect(url_for('all_colleges'))
 
     return render_template('new_college.html', colleges=colleges, cities=cities, regions=regions, all_tours=all_tours)
 
@@ -348,6 +368,27 @@ def all_tours():
     """provide all tours to html template"""
     tours = SESSION.query(Tours).all()
     return render_template('alltours.html', tours=tours)
+
+@APP.route('/tours/<int:id>/edit', methods=['GET', 'POST'])
+def edit_tour(id):
+    """allow user to edit tours"""
+    tour = SESSION.query(Tours).filter_by(id=id).first()
+    edited_tour = SESSION.query(Tours).filter_by(id=id).first()
+    if "username" not in login_session:
+        return redirect('/login')
+    if request.method == 'POST':
+        if request.form['notes']:
+            edited_tour.notes = request.form['notes']
+        if request.form['popularity']:
+            edited_tour.popularity = request.form['popularity']
+        if request.form['virtual_tour']:
+            edited_tour.virtual_tour = request.form['virtual_tour']
+        SESSION.add(edited_tour)
+        SESSION.commit()
+        flash('Edited '+str(edited_tour.type)+ ' tour')
+        return redirect(url_for('all_tours'))
+    else:
+        return render_template('edit_tour.html', id=id, edited_tour=edited_tour, tour=tour)
 
 
 # user functions
