@@ -172,9 +172,9 @@ def new_city():
 @APP.route('/college/<int:college_id>/<int:college_city_id>/')
 def each_college(college_id, college_city_id):
     """query a college and its information"""
-    colleges = SESSION.query(College).filter_by(college_id=college_id).one()
+    colleges = SESSION.query(College).filter_by(college_id=college_id).first()
     city_college = SESSION.query(College).filter_by(
-        college_city_id=college_city_id).one()
+        college_city_id=college_city_id).first()
     city = city_college.college_city.name
     url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=\
     imperial&appid=bfb6673821c8d44c9ba923d72274ef24'
@@ -207,22 +207,27 @@ def new_college():
     all_tours = SESSION.query(Tours).all()
     if request.method == 'POST':
         file = request.files['image_filename']
+        college_r = SESSION.query(Region).filter_by(name=request.form['college_region']).first()
+        college_c = SESSION.query(City).filter_by(name=request.form['college_city']).first()
+        print request.form['college_city']
+        college_t = SESSION.query(Tours).filter_by(type=request.form['tours']).first()
         f= os.path.join(current_app.root_path, APP.config['UPLOAD_FOLDER'], file.filename)
         file.save(f)
         file_n = file.filename
-        print request.form['college_city']
-        new_college_object = College(college_city=City(name=request.form['college_city']),
-                                     tours=Tours(type=request.form['tours']), name=request.form['name'],
+        new_college_object = College(name=request.form['name'],
+                                    college_city=college_c,
+                                     tours=college_t,
                                      image_filename=file_n,
-                                     college_region=Region(name=request.form['college_region']),
+                                     college_region=college_r,
                                      location=request.form['location'],
                                      phone_number=request.form['phone_number'],
                                      college_type=request.form['college_type'],
-                                     notes=request.form['notes'])
+                                     notes=request.form['notes'],
+                                     college_city_id=college_c.id)
         SESSION.add(new_college_object)
         flash('New College %s Successfully Created' % new_college_object.name)
         SESSION.commit()
-        return redirect(url_for('all_colleges', colleges=colleges, regions=regions))
+        return redirect(url_for('all_colleges'))
 
     return render_template('new_college.html', colleges=colleges, cities=cities, regions=regions, all_tours=all_tours)
 
